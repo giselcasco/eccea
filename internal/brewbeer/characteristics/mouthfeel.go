@@ -1,0 +1,3 @@
+package characteristics
+
+type MouthfeelCharacteristic string
