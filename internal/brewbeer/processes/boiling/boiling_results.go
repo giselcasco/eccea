@@ -3,7 +3,7 @@ package boiling
 import "eccea/internal/brewbeer/characteristics"
 
 type Results struct {
-	ibu                      float32 // ibu is the international bitterness unit
+	ibu                      float64 // ibu is the international bitterness unit
 	flavorCharacteristics    []characteristics.FlavorCharacteristic
 	smellCharacteristics     []characteristics.SmellCharacteristic
 	mouthfeelCharacteristics []characteristics.MouthfeelCharacteristic
@@ -13,11 +13,11 @@ func NewResults() *Results {
 	return &Results{}
 }
 
-func (r *Results) IBU() float32 {
+func (r *Results) IBU() float64 {
 	return r.ibu
 }
 
-func (r *Results) SetIBU(ibu float32) {
+func (r *Results) SetIBU(ibu float64) {
 	r.ibu = ibu
 }
 

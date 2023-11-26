@@ -1,5 +1,5 @@
 package boiling
 
 type Boiling interface {
-	Do(params *Params) *Results
+	Do(params *Params) (*Results, error)
 }
