@@ -1,14 +1,14 @@
 package maceration
 
 import (
-	"eccea/internal/brewbeer/characteristics"
+	"eccea/internal/brewbeer/characteristic"
 )
 
 type Results struct {
 	colorSRM              uint16
-	flavorCharacteristics []characteristics.FlavorCharacteristic
-	smellCharacteristics  []characteristics.SmellCharacteristic
-	colorCharacteristics  []characteristics.ColorCharacteristic
+	flavorCharacteristics []characteristic.Flavor
+	smellCharacteristics  []characteristic.Smell
+	colorCharacteristics  []characteristic.Color
 }
 
 func NewResults() *Results {
@@ -23,18 +23,26 @@ func (r *Results) SetColor(color uint16) {
 	r.colorSRM = color
 }
 
-func (r *Results) AddFlavorCharacteristic(flovorCharactrs characteristics.FlavorCharacteristic) {
-	r.flavorCharacteristics = append(r.flavorCharacteristics, flovorCharactrs)
+func (r *Results) AddFlavorCharacteristic(flavor characteristic.Flavor) {
+	r.flavorCharacteristics = append(r.flavorCharacteristics, flavor)
 }
 
-func (r *Results) AddColorCharacteristic(colorCharactrs characteristics.ColorCharacteristic) {
-	r.colorCharacteristics = append(r.colorCharacteristics, colorCharactrs)
+func (r *Results) AddColorCharacteristic(color characteristic.Color) {
+	r.colorCharacteristics = append(r.colorCharacteristics, color)
 }
 
-func (r *Results) FlavorCharacteristic() []characteristics.FlavorCharacteristic {
+func (r *Results) AddSmellCharacteristic(smell characteristic.Smell) {
+	r.smellCharacteristics = append(r.smellCharacteristics, smell)
+}
+
+func (r *Results) FlavorCharacteristic() []characteristic.Flavor {
 	return r.flavorCharacteristics
 }
 
-func (r *Results) ColorCharacteristic() []characteristics.ColorCharacteristic {
+func (r *Results) ColorCharacteristic() []characteristic.Color {
 	return r.colorCharacteristics
+}
+
+func (r *Results) SmellCharacteristic() []characteristic.Smell {
+	return r.smellCharacteristics
 }

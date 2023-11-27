@@ -1,22 +1,17 @@
 package ingredients
 
 import (
-	"eccea/internal/brewbeer/characteristics"
+	"eccea/internal/brewbeer/characteristic"
 )
 
 type (
 	Yeast struct {
 		id                    string
-		flavorCharacteristics []characteristics.FlavorCharacteristic
-		smellCharacteristics  []characteristics.SmellCharacteristic
-		colorCharacteristics  []characteristics.ColorCharacteristic
-		temperatureOfWork     TemperatureRangeOfWork
+		flavorCharacteristics []characteristic.Flavor
+		smellCharacteristics  []characteristic.Smell
+		colorCharacteristics  []characteristic.Color
+		temperatureOfWork     TemperatureRange
 		timeOfWork            TimeOfWork
-	}
-
-	TemperatureRangeOfWork struct {
-		min float32
-		max float32
 	}
 
 	TimeOfWork struct {
@@ -30,32 +25,24 @@ func (yeast *Yeast) ID() string {
 	return yeast.id
 }
 
-func (yeast *Yeast) FlavorCharacteristics() []characteristics.FlavorCharacteristic {
+func (yeast *Yeast) FlavorCharacteristics() []characteristic.Flavor {
 	return yeast.flavorCharacteristics
 }
 
-func (yeast *Yeast) SmellCharacteristics() []characteristics.SmellCharacteristic {
+func (yeast *Yeast) SmellCharacteristics() []characteristic.Smell {
 	return yeast.smellCharacteristics
 }
 
-func (yeast *Yeast) ColorCharacteristics() []characteristics.ColorCharacteristic {
+func (yeast *Yeast) ColorCharacteristics() []characteristic.Color {
 	return yeast.colorCharacteristics
 }
 
-func (yeast *Yeast) TemperatureOfWork() TemperatureRangeOfWork {
+func (yeast *Yeast) TemperatureOfWork() TemperatureRange {
 	return yeast.temperatureOfWork
 }
 
 func (yeast *Yeast) TimeOfWork() TimeOfWork {
 	return yeast.timeOfWork
-}
-
-func (temperature *TemperatureRangeOfWork) Min() float32 {
-	return temperature.min
-}
-
-func (temperature *TemperatureRangeOfWork) Max() float32 {
-	return temperature.max
 }
 
 func (time *TimeOfWork) Min() float32 {

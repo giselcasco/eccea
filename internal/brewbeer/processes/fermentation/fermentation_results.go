@@ -1,12 +1,12 @@
 package fermentation
 
-import "eccea/internal/brewbeer/characteristics"
+import "eccea/internal/brewbeer/characteristic"
 
 type Results struct {
 	abv                   float32 // abv alcohol by volume of beer
-	flavorCharacteristics []characteristics.FlavorCharacteristic
-	smellCharacteristics  []characteristics.SmellCharacteristic
-	colorCharacteristics  []characteristics.ColorCharacteristic
+	flavorCharacteristics []characteristic.Flavor
+	smellCharacteristics  []characteristic.Smell
+	colorCharacteristics  []characteristic.Color
 }
 
 func NewResults() *Results {
@@ -21,26 +21,26 @@ func (r *Results) SetABV(alcoholByVolume float32) {
 	r.abv = alcoholByVolume
 }
 
-func (r *Results) AddFlavorCharacteristic(flovorCharactrs characteristics.FlavorCharacteristic) {
-	r.flavorCharacteristics = append(r.flavorCharacteristics, flovorCharactrs)
+func (r *Results) AddFlavorCharacteristic(flavor characteristic.Flavor) {
+	r.flavorCharacteristics = append(r.flavorCharacteristics, flavor)
 }
 
-func (r *Results) AddSmellCharacteristic(smellCharactrs characteristics.SmellCharacteristic) {
-	r.smellCharacteristics = append(r.smellCharacteristics, smellCharactrs)
+func (r *Results) AddSmellCharacteristic(smell characteristic.Smell) {
+	r.smellCharacteristics = append(r.smellCharacteristics, smell)
 }
 
-func (r *Results) AddColorCharacteristic(colorCharactrs characteristics.ColorCharacteristic) {
-	r.colorCharacteristics = append(r.colorCharacteristics, colorCharactrs)
+func (r *Results) AddColorCharacteristic(color characteristic.Color) {
+	r.colorCharacteristics = append(r.colorCharacteristics, color)
 }
 
-func (r *Results) FlavorCharacteristic() []characteristics.FlavorCharacteristic {
+func (r *Results) FlavorCharacteristic() []characteristic.Flavor {
 	return r.flavorCharacteristics
 }
 
-func (r *Results) SmellCCharacteristic() []characteristics.SmellCharacteristic {
+func (r *Results) SmellCCharacteristic() []characteristic.Smell {
 	return r.smellCharacteristics
 }
 
-func (r *Results) ColorCharacteristic() []characteristics.ColorCharacteristic {
+func (r *Results) ColorCharacteristic() []characteristic.Color {
 	return r.colorCharacteristics
 }

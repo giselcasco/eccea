@@ -1,23 +1,23 @@
 package ingredients
 
 import (
-	"eccea/internal/brewbeer/characteristics"
+	"eccea/internal/brewbeer/characteristic"
 )
 
 type (
 	Malt struct {
 		id                    string
-		flavorCharacteristics []characteristics.FlavorCharacteristic
-		smellCharacteristics  []characteristics.SmellCharacteristic
-		colorCharacteristics  []characteristics.ColorCharacteristic
+		flavorCharacteristics []characteristic.Flavor
+		smellCharacteristics  []characteristic.Smell
+		colorCharacteristics  []characteristic.Color
 		colorSRM              uint16
-		temperatureOfUse      TemperatureRangeOfUse
+		temperatureOfUse      TemperatureRange
 		extractFineGrind      float32
 		extractCoarseGrind    float32
 		diastaticPower        float32
 	}
 
-	TemperatureRangeOfUse struct {
+	TemperatureRange struct {
 		min float32
 		max float32
 	}
@@ -27,19 +27,19 @@ func (malt *Malt) ID() string {
 	return malt.id
 }
 
-func (malt *Malt) FlavorCharacteristics() []characteristics.FlavorCharacteristic {
+func (malt *Malt) FlavorCharacteristics() []characteristic.Flavor {
 	return malt.flavorCharacteristics
 }
 
-func (malt *Malt) SmellCharacteristics() []characteristics.SmellCharacteristic {
+func (malt *Malt) SmellCharacteristics() []characteristic.Smell {
 	return malt.smellCharacteristics
 }
 
-func (malt *Malt) ColorCharacteristics() []characteristics.ColorCharacteristic {
+func (malt *Malt) ColorCharacteristics() []characteristic.Color {
 	return malt.colorCharacteristics
 }
 
-func (malt *Malt) TemperatureOfUse() TemperatureRangeOfUse {
+func (malt *Malt) TemperatureOfUse() TemperatureRange {
 	return malt.temperatureOfUse
 }
 
@@ -55,10 +55,10 @@ func (malt *Malt) DiastaticPower() float32 {
 	return malt.diastaticPower
 }
 
-func (temperature *TemperatureRangeOfUse) Min() float32 {
+func (temperature *TemperatureRange) Min() float32 {
 	return temperature.min
 }
 
-func (temperature *TemperatureRangeOfUse) Max() float32 {
+func (temperature *TemperatureRange) Max() float32 {
 	return temperature.max
 }

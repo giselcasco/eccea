@@ -1,14 +1,14 @@
 package ingredients
 
 import (
-	"eccea/internal/brewbeer/characteristics"
+	"eccea/internal/brewbeer/characteristic"
 )
 
 type Hop struct {
 	id                       string
-	flavorCharacteristics    []characteristics.FlavorCharacteristic
-	smellCharacteristics     []characteristics.SmellCharacteristic
-	mouthfeelCharacteristics []characteristics.MouthfeelCharacteristic
+	flavorCharacteristics    []characteristic.Flavor
+	smellCharacteristics     []characteristic.Smell
+	mouthfeelCharacteristics []characteristic.Mouthfeel
 	alphaAcids               float32
 	betaAcids                float32
 }
@@ -17,15 +17,15 @@ func (hop *Hop) ID() string {
 	return hop.id
 }
 
-func (hop *Hop) FlavorCharacteristics() []characteristics.FlavorCharacteristic {
+func (hop *Hop) FlavorCharacteristics() []characteristic.Flavor {
 	return hop.flavorCharacteristics
 }
 
-func (hop *Hop) SmellCharacteristics() []characteristics.SmellCharacteristic {
+func (hop *Hop) SmellCharacteristics() []characteristic.Smell {
 	return hop.smellCharacteristics
 }
 
-func (hop *Hop) MouthfeelCharacteristics() []characteristics.MouthfeelCharacteristic {
+func (hop *Hop) MouthfeelCharacteristics() []characteristic.Mouthfeel {
 	return hop.mouthfeelCharacteristics
 }
 
