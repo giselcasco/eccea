@@ -1,5 +1,5 @@
 package maceration
 
-type Maceration interface {
+type Service interface {
 	Do(params *Params) *Results
 }

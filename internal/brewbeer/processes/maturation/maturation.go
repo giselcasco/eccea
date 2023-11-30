@@ -1,5 +1,5 @@
 package maturation
 
-type Maturation interface {
+type Service interface {
 	Do(params *Params) *Results
 }

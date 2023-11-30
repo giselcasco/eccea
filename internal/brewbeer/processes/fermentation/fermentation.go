@@ -1,5 +1,5 @@
 package fermentation
 
-type Fermentation interface {
+type Service interface {
 	Do(params *Params) *Results
 }

@@ -1,14 +1,16 @@
 package maceration
 
-import "eccea/internal/repository"
+import (
+	"eccea/internal/brewbeer/ingredients"
+)
 
 type service struct {
-	ingredients repository.Ingredients
+	repo ingredients.Repository
 }
 
-func NewService(ingredients repository.Ingredients) Maceration {
+func NewService(repo ingredients.Repository) Service {
 	return &service{
-		ingredients: ingredients,
+		repo: repo,
 	}
 }
 

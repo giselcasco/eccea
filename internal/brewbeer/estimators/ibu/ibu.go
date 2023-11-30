@@ -1,5 +1,5 @@
 package ibu
 
 type IBU interface {
-	Estimate(params Params) Estimation
+	Estimate(params Params) (Estimation, error)
 }

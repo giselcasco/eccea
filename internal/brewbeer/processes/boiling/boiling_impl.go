@@ -2,44 +2,77 @@ package boiling
 
 import (
 	"eccea/internal/brewbeer/ingredients"
-	"eccea/internal/repository"
 	"math"
 )
 
 type service struct {
-	ingredients repository.Ingredients
+	repo ingredients.Repository
 }
 
-func NewService(ingredients repository.Ingredients) Boiling {
+func NewService(repo ingredients.Repository) Service {
 	return &service{
-		ingredients: ingredients,
+		repo: repo,
 	}
 }
 
-func (s *service) Do(params *Params) (*Results, error) {
+func (s *service) Do(params *Params, useCaseKey string) (*Results, error) {
+	var hops []ingredients.Hop
 	estimateResults := &Results{}
+
+	for _, hopAddition := range params.Additions() {
+		hop, errRepo := s.repo.GetHop(hopAddition.id)
+		if errRepo != nil {
+			return nil, errRepo
+		}
+		hops = append(hops, *hop)
+	}
+
+	if estimateFunc, ok := funcByUseCaseKey[useCaseKey]; ok {
+		errEstimate := estimateFunc(params, hops, estimateResults)
+		if errEstimate != nil {
+			return nil, errEstimate
+		}
+	}
+
+	return estimateResults, nil
+}
+
+type estimate func(params *Params, hops []ingredients.Hop, result *Results) error
+
+var funcByUseCaseKey = map[string]estimate{
+	"ibu": estimateIBU,
+}
+
+func estimateIBU(params *Params, hops []ingredients.Hop, result *Results) error {
 	var ibus float64
 	for _, hopAddition := range params.Additions() {
-		hop, err := s.ingredients.GetHop(hopAddition.id)
-		if err != nil {
-			return nil, err
+		if hop := getHop(hops, hopAddition.id); hop != nil {
+			ibus += calculateIBU(params, hopAddition, *hop)
 		}
-		ibus += s.calculateIBU(params, hopAddition, hop)
 	}
 
-	estimateResults.ibu = ibus
+	result.ibu = ibus
 
-	return nil, nil
+	return nil
 }
 
-func (s *service) calculateIBU(params *Params, addition HopAdditions, hop *ingredients.Hop) float64 {
-	firstFactor := s.greatnessFactor(params.initialDensity) * s.boilingTimeFactor(addition.timeOfWork)
-	secondFactor := s.proportionOfAlphaAcidUsed(hop.AlphaAcids(), addition.quantity, params.volume)
+func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
+	for _, hop := range hops {
+		if hop.ID() == idHop {
+			return &hop
+		}
+	}
+	return nil
+}
+
+func calculateIBU(params *Params, addition HopAdditions, hop ingredients.Hop) float64 {
+	firstFactor := greatnessFactor(params.initialDensity) * boilingTimeFactor(addition.timeOfWork)
+	secondFactor := proportionOfAlphaAcidUsed(hop.AlphaAcids(), addition.quantity, params.volume)
 
 	return firstFactor * float64(secondFactor)
 }
 
-func (s *service) greatnessFactor(initialDensity uint32) float64 {
+func greatnessFactor(initialDensity uint32) float64 {
 	base := 0.000125
 	exponent := initialDensity - 1
 	firstFactor := 1.65
@@ -48,7 +81,7 @@ func (s *service) greatnessFactor(initialDensity uint32) float64 {
 	return firstFactor * secondFactor
 }
 
-func (s *service) boilingTimeFactor(timeOfWork uint32) float64 {
+func boilingTimeFactor(timeOfWork uint32) float64 {
 	exponent := -0.04 * float64(timeOfWork)
 	eRaisedExp := math.Exp(exponent)
 	dividend := 1 - eRaisedExp
@@ -57,7 +90,7 @@ func (s *service) boilingTimeFactor(timeOfWork uint32) float64 {
 	return dividend / divisor
 }
 
-func (s *service) proportionOfAlphaAcidUsed(alphaAcids float32, quantity float32, volume uint32) float32 {
+func proportionOfAlphaAcidUsed(alphaAcids float32, quantity float32, volume uint32) float32 {
 	dividend := alphaAcids * quantity * 1000
 	divisor := float32(volume)
 
