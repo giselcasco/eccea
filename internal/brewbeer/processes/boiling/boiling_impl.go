@@ -19,8 +19,8 @@ func (s *service) Do(params *Params, useCaseKey string) (*Results, error) {
 	var hops []ingredients.Hop
 	estimateResults := &Results{}
 
-	for _, hopAddition := range params.Additions() {
-		hop, errRepo := s.repo.GetHop(hopAddition.id)
+	for _, hopAddition := range params.HopAdditions {
+		hop, errRepo := s.repo.GetHop(hopAddition.ID)
 		if errRepo != nil {
 			return nil, errRepo
 		}
@@ -45,8 +45,8 @@ var funcByUseCaseKey = map[string]estimate{
 
 func estimateIBU(params *Params, hops []ingredients.Hop, result *Results) error {
 	var ibus float64
-	for _, hopAddition := range params.Additions() {
-		if hop := getHop(hops, hopAddition.id); hop != nil {
+	for _, hopAddition := range params.HopAdditions {
+		if hop := getHop(hops, hopAddition.ID); hop != nil {
 			ibus += calculateIBU(params, hopAddition, *hop)
 		}
 	}
@@ -66,8 +66,8 @@ func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
 }
 
 func calculateIBU(params *Params, addition HopAdditions, hop ingredients.Hop) float64 {
-	firstFactor := greatnessFactor(params.initialDensity) * boilingTimeFactor(addition.timeOfWork)
-	secondFactor := proportionOfAlphaAcidUsed(hop.AlphaAcids(), addition.quantity, params.volume)
+	firstFactor := greatnessFactor(params.InitialDensity) * boilingTimeFactor(addition.TimeOfWork)
+	secondFactor := proportionOfAlphaAcidUsed(hop.AlphaAcids(), addition.Quantity, params.Volume)
 
 	return firstFactor * float64(secondFactor)
 }

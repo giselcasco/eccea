@@ -4,6 +4,9 @@ import (
 	"bufio"
 	"eccea/internal/brewbeer/estimators/ibu"
 	"eccea/internal/brewbeer/processes/boiling"
+	"eccea/internal/brewbeer/processes/fermentation"
+	"eccea/internal/brewbeer/processes/maceration"
+	"eccea/internal/brewbeer/processes/maturation"
 	"eccea/internal/repository"
 	"fmt"
 	"os"
@@ -20,12 +23,12 @@ const (
 		"4 - Calcular ABV. \n" +
 		"5 - Calcular IBU. \n" +
 		"0 - Salir. "
-	goodBeer              = "¡Buena Birra!"
-	inputError            = "Error al leer la entrada "
-	readOptionError       = "Error al leer el número de la opción seleccionada %s %s"
-	parameterLoadingError = "Error al cargar parametros "
-	runOptionError        = "Error al ejecutar la opción seleccionada "
-	buildParamsError      = "Error al cargar los parametros de ejecución"
+	goodBeer         = "¡Buena Birra!"
+	inputError       = "Error al leer la entrada "
+	readOptionError  = "Error al leer el número de la opción seleccionada %s %s"
+	runOptionError   = "Error al ejecutar la opción seleccionada "
+	buildParamsError = "Error al cargar los parametros de ejecución"
+	yes              = "yes"
 )
 
 func main() {
@@ -47,20 +50,14 @@ func main() {
 			break
 		}
 
-		option, err := strconv.ParseInt(input, 64, 10)
+		option, err := strconv.ParseInt(input, 10, 64)
 		if err != nil {
 			fmt.Printf(readOptionError, input, err)
 			return
 		}
 
-		if askInoutParams, ok := inputOptions[option]; ok {
-			params, errInput := askInoutParams()
-			if errInput != nil {
-				fmt.Println(parameterLoadingError, err)
-				return
-			}
-
-			exeError := exeOptions[option](params)
+		if exeOption, ok := exeOptions[option]; ok {
+			exeError := exeOption()
 			if exeError != nil {
 				fmt.Println(runOptionError, err)
 				return
@@ -69,43 +66,7 @@ func main() {
 	}
 }
 
-type askInput func() (interface{}, error)
-
-var inputOptions = map[int64]askInput{
-	0: exit,
-	1: askForBeerParams,
-	2: askForFlavorParams,
-	3: askForColorParams,
-	4: askForABVParams,
-	5: askForIBUParams,
-}
-
-func exit() (any, error) {
-	return nil, nil
-}
-
-func askForBeerParams() (any, error) {
-	return nil, nil
-}
-
-func askForFlavorParams() (any, error) {
-	return nil, nil
-}
-
-func askForColorParams() (any, error) {
-	return nil, nil
-}
-
-func askForIBUParams() (any, error) {
-	//  TODO build boiling params
-	return nil, nil
-}
-
-func askForABVParams() (any, error) {
-	return nil, nil
-}
-
-type executor func(any) error
+type executor func() error
 
 var exeOptions = map[int64]executor{
 	1: executeNilUseCase,
@@ -115,17 +76,17 @@ var exeOptions = map[int64]executor{
 	5: executeIBUUseCase,
 }
 
-func executeIBUUseCase(param any) error {
+func executeIBUUseCase() error {
 	repository := repository.NewIngredientsRepository()
 	boilingService := boiling.NewService(repository)
 	estimator := ibu.NewIBUImpl(boilingService)
 
-	ibuParams, ok := param.(ibu.Params)
-	if !ok {
+	boilingParams, err := askForBoilingParams()
+	if err != nil {
 		fmt.Println(buildParamsError)
-		return nil
+		return err
 	}
-
+	ibuParams := ibu.Params{Boiling: *boilingParams}
 	ibuEstimated, estimatorError := estimator.Estimate(ibuParams)
 	if estimatorError != nil {
 		return estimatorError
@@ -135,6 +96,54 @@ func executeIBUUseCase(param any) error {
 	return nil
 }
 
-func executeNilUseCase(any) error {
+func executeNilUseCase() error {
 	return nil
+}
+
+func askForMaturationParams() (*maturation.Params, error) {
+	return nil, nil
+}
+
+func askForMacerationParams() (*maceration.Params, error) {
+	return nil, nil
+}
+
+func askForFermentationParams() (*fermentation.Params, error) {
+	return nil, nil
+}
+
+func askForBoilingParams() (*boiling.Params, error) {
+	boilingParams := boiling.Params{}
+
+	// Solicitar al usuario los valores para cada campo
+	fmt.Print("Ingrese el tiempo total de hervor en minutos: ")
+	fmt.Scanln(&boilingParams.TotalTime)
+
+	fmt.Print("Ingrese la cantidad de litros inicial del mosto: ")
+	fmt.Scanln(&boilingParams.WortAmount)
+
+	fmt.Print("Ingrese la densidad inicial: ")
+	fmt.Scanln(&boilingParams.InitialDensity)
+
+	fmt.Print("Ingrese el volumen del mosto: ")
+	fmt.Scanln(&boilingParams.Volume)
+
+	hopAdditions := yes
+	for strings.EqualFold(hopAdditions, yes) {
+		hopAddition := boiling.HopAdditions{}
+
+		fmt.Print("Ingrese el ID del lúpulo: ")
+		fmt.Scanln(&hopAddition.ID)
+
+		fmt.Print("Ingrese la cantidad del lúpulo en gramos: ")
+		fmt.Scanln(&hopAddition.Quantity)
+
+		fmt.Print("Ingrese el tiempo de trabajo del lúpulo en minutos: ")
+		fmt.Scanln(&hopAddition.TimeOfWork)
+
+		fmt.Print("Desea ingresar otro lúpulo? yes/no --> ")
+		fmt.Scanln(&hopAdditions)
+	}
+
+	return &boilingParams, nil
 }
