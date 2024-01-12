@@ -11,22 +11,24 @@ import (
 	"strings"
 )
 
+const (
+	welcome = "¡Bienvenido aventurero/a! Gracias por elegir a CervezaDor como asistente en tu aventura `@-@´"
+	options = "A continuación se listan las acciones que CervezaDor puede realizar: \n" +
+		"1 - Estimar caracteristicas resultantes. \n " +
+		"2 - Estimar caracteristicas del sabor. \n" +
+		"3 - Estimar caracteristicas del color. \n " +
+		"4 - Calcular ABV. \n" +
+		"5 - Calcular IBU. \n" +
+		"0 - Salir. "
+	goodBeer              = "¡Buena Birra!"
+	inputError            = "Error al leer la entrada "
+	readOptionError       = "Error al leer el número de la opción seleccionada %s %s"
+	parameterLoadingError = "Error al cargar parametros "
+	runOptionError        = "Error al ejecutar la opción seleccionada "
+	buildParamsError      = "Error al cargar los parametros de ejecución"
+)
+
 func main() {
-	const (
-		welcome = "¡Bienvenido aventurero/a! Gracias por elegir a CervezaDor como asistente en tu aventura `@-@´"
-		options = "A continuación se listan las acciones que CervezaDor puede realizar: \n" +
-			"1 - Estimar caracteristicas resultantes. \n " +
-			"2 - Estimar caracteristicas del sabor. \n" +
-			"3 - Estimar caracteristicas del color. \n " +
-			"4 - Calcular ABV. \n" +
-			"5 - Calcular IBU. \n" +
-			"0 - Salir. "
-		goodBeer              = "¡Buena Birra!"
-		inputError            = "Error al leer la entrada "
-		readOptionError       = "Error al leer el número de la opción seleccionada "
-		parameterLoadingError = "Error al cargar parametros "
-		runOptionError        = "Error al ejecutar la opción seleccionada "
-	)
 
 	for {
 		fmt.Println(welcome)
@@ -47,7 +49,7 @@ func main() {
 
 		option, err := strconv.ParseInt(input, 64, 10)
 		if err != nil {
-			fmt.Println(readOptionError, input, err)
+			fmt.Printf(readOptionError, input, err)
 			return
 		}
 
@@ -78,31 +80,32 @@ var inputOptions = map[int64]askInput{
 	5: askForIBUParams,
 }
 
-func exit() (interface{}, error) {
+func exit() (any, error) {
 	return nil, nil
 }
 
-func askForBeerParams() (interface{}, error) {
+func askForBeerParams() (any, error) {
 	return nil, nil
 }
 
-func askForFlavorParams() (interface{}, error) {
+func askForFlavorParams() (any, error) {
 	return nil, nil
 }
 
-func askForColorParams() (interface{}, error) {
+func askForColorParams() (any, error) {
 	return nil, nil
 }
 
-func askForIBUParams() (interface{}, error) {
+func askForIBUParams() (any, error) {
+	//  TODO build boiling params
 	return nil, nil
 }
 
-func askForABVParams() (interface{}, error) {
+func askForABVParams() (any, error) {
 	return nil, nil
 }
 
-type executor func(interface{}) error
+type executor func(any) error
 
 var exeOptions = map[int64]executor{
 	1: executeNilUseCase,
@@ -112,12 +115,18 @@ var exeOptions = map[int64]executor{
 	5: executeIBUUseCase,
 }
 
-func executeIBUUseCase(interface{}) error {
-	boilingService := boiling.NewService(repository.NewIngredientsRepository())
+func executeIBUUseCase(param any) error {
+	repository := repository.NewIngredientsRepository()
+	boilingService := boiling.NewService(repository)
 	estimator := ibu.NewIBUImpl(boilingService)
 
-	// TODO conver interface to params
-	ibuEstimated, estimatorError := estimator.Estimate(ibu.Params{})
+	ibuParams, ok := param.(ibu.Params)
+	if !ok {
+		fmt.Println(buildParamsError)
+		return nil
+	}
+
+	ibuEstimated, estimatorError := estimator.Estimate(ibuParams)
 	if estimatorError != nil {
 		return estimatorError
 	}
@@ -126,6 +135,6 @@ func executeIBUUseCase(interface{}) error {
 	return nil
 }
 
-func executeNilUseCase(interface{}) error {
+func executeNilUseCase(any) error {
 	return nil
 }
