@@ -44,14 +44,11 @@ var funcByUseCaseKey = map[string]estimate{
 }
 
 func estimateIBU(params *Params, hops []ingredients.Hop, result *Results) error {
-	var ibus float64
 	for _, hopAddition := range params.HopAdditions {
 		if hop := getHop(hops, hopAddition.ID); hop != nil {
-			ibus += calculateIBU(params, hopAddition, *hop)
+			result.ibu += calculateIBU(params, hopAddition, *hop)
 		}
 	}
-
-	result.ibu = ibus
 
 	return nil
 }
@@ -67,14 +64,14 @@ func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
 
 func calculateIBU(params *Params, addition HopAdditions, hop ingredients.Hop) float64 {
 	firstFactor := greatnessFactor(params.InitialDensity) * boilingTimeFactor(addition.TimeOfWork)
-	secondFactor := proportionOfAlphaAcidUsed(hop.AlphaAcids(), addition.Quantity, params.Volume)
+	secondFactor := proportionOfAlphaAcidUsed(hop.AlphaAcids(), addition.Quantity, params.WortAmount)
 
 	return firstFactor * float64(secondFactor)
 }
 
 func greatnessFactor(initialDensity uint32) float64 {
 	base := 0.000125
-	exponent := initialDensity - 1
+	exponent := (initialDensity / 100) - 1
 	firstFactor := 1.65
 	secondFactor := math.Pow(base, float64(exponent))
 

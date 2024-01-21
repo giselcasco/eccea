@@ -3,9 +3,8 @@ package boiling
 type (
 	Params struct {
 		TotalTime      uint32 // TotalTime is the total time in minutes of boiling process.
-		WortAmount     uint32 // WortAmount is the Quantity of wort at the beginning of the process.
 		InitialDensity uint32
-		Volume         uint32         // Volume in liters.
+		WortAmount     uint32         // WortAmount is the Quantity of wort in liters at the beginning of the process..
 		HopAdditions   []HopAdditions // HopAdditions list of hops included in the process.
 	}
 
