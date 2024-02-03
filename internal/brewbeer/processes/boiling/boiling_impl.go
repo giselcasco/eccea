@@ -3,6 +3,7 @@ package boiling
 import (
 	"eccea/internal/brewbeer/ingredients"
 	"math"
+	"strings"
 )
 
 type service struct {
@@ -28,34 +29,29 @@ func (s *service) Do(params *Params, useCaseKey string) (*Results, error) {
 	}
 
 	if estimateFunc, ok := funcByUseCaseKey[useCaseKey]; ok {
-		errEstimate := estimateFunc(params, hops, estimateResults)
-		if errEstimate != nil {
-			return nil, errEstimate
-		}
+		estimateFunc(params, hops, estimateResults)
 	}
 
 	return estimateResults, nil
 }
 
-type estimate func(params *Params, hops []ingredients.Hop, result *Results) error
+type estimate func(params *Params, hops []ingredients.Hop, result *Results)
 
 var funcByUseCaseKey = map[string]estimate{
 	"ibu": estimateIBU,
 }
 
-func estimateIBU(params *Params, hops []ingredients.Hop, result *Results) error {
+func estimateIBU(params *Params, hops []ingredients.Hop, result *Results) {
 	for _, hopAddition := range params.HopAdditions {
 		if hop := getHop(hops, hopAddition.ID); hop != nil {
 			result.ibu += calculateIBU(params, hopAddition, *hop)
 		}
 	}
-
-	return nil
 }
 
 func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
 	for _, hop := range hops {
-		if hop.ID() == idHop {
+		if strings.EqualFold(hop.ID(), idHop) {
 			return &hop
 		}
 	}
@@ -91,5 +87,8 @@ func proportionOfAlphaAcidUsed(alphaAcids float32, quantity float32, volume uint
 	dividend := alphaAcids * quantity * 1000
 	divisor := float32(volume)
 
-	return dividend / divisor
+	if divisor > 0 {
+		return dividend / divisor
+	}
+	return 0
 }
