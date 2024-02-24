@@ -13,13 +13,13 @@ import (
 )
 
 func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
-	hop := &responses.Hop{AlphaAcids: 5.4}
+	hop := &responses.Hop{AlphaAcids: 14}
 
 	var dataSet = []struct {
 		nameTest     string
 		params       *boiling.Params
 		useCaseKey   string
-		result       *boiling.Results
+		ibu          string
 		hopResult    *ingredients.Hop
 		repoError    error
 		boilingError error
@@ -36,9 +36,26 @@ func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 			},
 			useCaseKey: "ibu",
 			hopResult:  hop.ToDomain("2"),
-			result:     &boiling.Results{},
+			ibu:        "",
 		},
-		// TODO test with valid values
+		{
+			nameTest: "Boiling success when valid params provided",
+			params: &boiling.Params{
+				TotalTime:      30,
+				InitialDensity: 1024,
+				WortAmount:     50,
+				HopAdditions: []boiling.HopAdditions{
+					{
+						ID:         "2",
+						TimeOfWork: 30,
+						Quantity:   200,
+					},
+				},
+			},
+			useCaseKey: "ibu",
+			hopResult:  hop.ToDomain("2"),
+			ibu:        "125.4",
+		},
 		{
 			nameTest: "Boiling fail when get hop fail",
 			params: &boiling.Params{
@@ -65,7 +82,7 @@ func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 
 			response, err := boiling.Do(data.params, data.useCaseKey)
 
-			assert.Equal(t, data.result, response)
+			assert.Equal(t, data.ibu, response.IBU())
 			assert.Equal(t, data.resultError, err)
 		})
 	}

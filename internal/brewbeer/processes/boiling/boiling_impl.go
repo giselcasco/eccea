@@ -2,6 +2,7 @@ package boiling
 
 import (
 	"eccea/internal/brewbeer/ingredients"
+	"fmt"
 	"math"
 	"strings"
 )
@@ -18,21 +19,21 @@ func NewService(repo ingredients.Repository) Service {
 
 func (s *service) Do(params *Params, useCaseKey string) (*Results, error) {
 	var hops []ingredients.Hop
-	estimateResults := &Results{}
+	var estimateResults Results
 
 	for _, hopAddition := range params.HopAdditions {
 		hop, errRepo := s.repo.GetHop(hopAddition.ID)
 		if errRepo != nil {
-			return nil, errRepo
+			return &estimateResults, errRepo
 		}
 		hops = append(hops, *hop)
 	}
 
 	if estimateFunc, ok := funcByUseCaseKey[useCaseKey]; ok {
-		estimateFunc(params, hops, estimateResults)
+		estimateFunc(params, hops, &estimateResults)
 	}
 
-	return estimateResults, nil
+	return &estimateResults, nil
 }
 
 type estimate func(params *Params, hops []ingredients.Hop, result *Results)
@@ -42,10 +43,15 @@ var funcByUseCaseKey = map[string]estimate{
 }
 
 func estimateIBU(params *Params, hops []ingredients.Hop, result *Results) {
+	var ibu float64
 	for _, hopAddition := range params.HopAdditions {
 		if hop := getHop(hops, hopAddition.ID); hop != nil {
-			result.ibu += calculateIBU(params, hopAddition, *hop)
+			ibu += calculateIBU(params, hopAddition, *hop)
 		}
+	}
+
+	if ibu > 0 {
+		result.ibu = fmt.Sprintf("%.1f", ibu)
 	}
 }
 
@@ -59,36 +65,32 @@ func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
 }
 
 func calculateIBU(params *Params, addition HopAdditions, hop ingredients.Hop) float64 {
-	firstFactor := greatnessFactor(params.InitialDensity) * boilingTimeFactor(addition.TimeOfWork)
-	secondFactor := proportionOfAlphaAcidUsed(hop.AlphaAcids(), addition.Quantity, params.WortAmount)
+	firstFactor := greatnessFactor(params.InitialDensity)
+	secondFactor := boilingTimeFactor(addition.TimeOfWork)
+	thirdFactor := proportionOfAlphaAcidUsed(hop.AlphaAcids(), addition.Quantity)
+	divisor := float64(params.WortAmount) * 4.15
 
-	return firstFactor * float64(secondFactor)
+	return (firstFactor * secondFactor * thirdFactor) / divisor
 }
 
-func greatnessFactor(initialDensity uint32) float64 {
-	base := 0.000125
-	exponent := (initialDensity / 100) - 1
+func greatnessFactor(initialDensity uint64) float64 {
 	firstFactor := 1.65
-	secondFactor := math.Pow(base, float64(exponent))
+
+	base := 0.000125
+	exponent := (float64(initialDensity) / 1000.0) - 1.0
+	secondFactor := math.Pow(base, exponent)
 
 	return firstFactor * secondFactor
 }
 
-func boilingTimeFactor(timeOfWork uint32) float64 {
+func boilingTimeFactor(timeOfWork uint64) float64 {
 	exponent := -0.04 * float64(timeOfWork)
 	eRaisedExp := math.Exp(exponent)
 	dividend := 1 - eRaisedExp
-	divisor := 4.15
 
-	return dividend / divisor
+	return dividend
 }
 
-func proportionOfAlphaAcidUsed(alphaAcids float32, quantity float32, volume uint32) float32 {
-	dividend := alphaAcids * quantity * 1000
-	divisor := float32(volume)
-
-	if divisor > 0 {
-		return dividend / divisor
-	}
-	return 0
+func proportionOfAlphaAcidUsed(alphaAcids float64, quantity float64) float64 {
+	return (alphaAcids / 100.0) * quantity * 1000
 }

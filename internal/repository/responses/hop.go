@@ -10,8 +10,8 @@ type Hop struct {
 		SmellCharacteristics     []characteristic.Smell
 		MouthfeelCharacteristics []characteristic.Mouthfeel
 	*/
-	AlphaAcids float32
-	BetaAcids  float32
+	AlphaAcids float64
+	BetaAcids  float64
 }
 
 func (h Hop) ToDomain(idHop string) *ingredients.Hop {

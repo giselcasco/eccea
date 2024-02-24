@@ -9,8 +9,8 @@ type Hop struct {
 	flavorCharacteristics    []characteristic.Flavor
 	smellCharacteristics     []characteristic.Smell
 	mouthfeelCharacteristics []characteristic.Mouthfeel
-	alphaAcids               float32
-	betaAcids                float32
+	alphaAcids               float64
+	betaAcids                float64
 }
 
 func (hop *Hop) ID() string {
@@ -45,17 +45,17 @@ func (hop *Hop) SetMouthfeelCharacteristics(mouthfeel []characteristic.Mouthfeel
 	hop.mouthfeelCharacteristics = mouthfeel
 }
 
-func (hop *Hop) BetaAcids() float32 {
+func (hop *Hop) BetaAcids() float64 {
 	return hop.betaAcids
 }
 
-func (hop *Hop) SetBetaAcids(betaAcids float32) {
+func (hop *Hop) SetBetaAcids(betaAcids float64) {
 	hop.betaAcids = betaAcids
 }
-func (hop *Hop) AlphaAcids() float32 {
+func (hop *Hop) AlphaAcids() float64 {
 	return hop.alphaAcids
 }
 
-func (hop *Hop) SetAlphaAcids(alphaAcids float32) {
+func (hop *Hop) SetAlphaAcids(alphaAcids float64) {
 	hop.alphaAcids = alphaAcids
 }
