@@ -4,7 +4,7 @@ type (
 	Params struct {
 		TotalTime      uint64 // TotalTime is the total time in minutes of boiling process.
 		InitialDensity uint64
-		WortAmount     uint64         // WortAmount is the Quantity of wort in liters at the beginning of the process..
+		WortAmount     uint64         // WortAmount is the Quantity of wort in liters at the beginning of the process.
 		HopAdditions   []HopAdditions // HopAdditions list of hops included in the process.
 	}
 

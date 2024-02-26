@@ -71,10 +71,6 @@ func main() {
 type executor func() error
 
 var exeOptions = map[int64]executor{
-	1: executeNilUseCase,
-	2: executeNilUseCase,
-	3: executeNilUseCase,
-	4: executeNilUseCase,
 	5: executeIBUUseCase,
 }
 
@@ -88,6 +84,7 @@ func executeIBUUseCase() error {
 		fmt.Println(buildParamsError)
 		return err
 	}
+
 	ibuParams := ibu.Params{Boiling: *boilingParams}
 	ibuEstimated, estimatorError := estimator.Estimate(ibuParams)
 	if estimatorError != nil {
@@ -97,22 +94,6 @@ func executeIBUUseCase() error {
 	fmt.Printf("El IBU estimado es %f: \n", ibuEstimated.IBU)
 	time.Sleep(2 * time.Second)
 	return nil
-}
-
-func executeNilUseCase() error {
-	return nil
-}
-
-func askForMaturationParams() (*maturation.Params, error) {
-	return nil, nil
-}
-
-func askForMacerationParams() (*maceration.Params, error) {
-	return nil, nil
-}
-
-func askForFermentationParams() (*fermentation.Params, error) {
-	return nil, nil
 }
 
 func askForBoilingParams() (*boiling.Params, error) {
@@ -170,4 +151,16 @@ func askForBoilingParams() (*boiling.Params, error) {
 	}
 
 	return &boilingParams, nil
+}
+
+func askForMaturationParams() (*maturation.Params, error) {
+	return nil, nil
+}
+
+func askForMacerationParams() (*maceration.Params, error) {
+	return nil, nil
+}
+
+func askForFermentationParams() (*fermentation.Params, error) {
+	return nil, nil
 }

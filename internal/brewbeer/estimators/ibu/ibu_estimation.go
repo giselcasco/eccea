@@ -1,5 +1,5 @@
 package ibu
 
 type Estimation struct {
-	IBU float64
+	IBU string
 }
