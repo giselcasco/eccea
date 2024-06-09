@@ -34,7 +34,6 @@ const (
 )
 
 func main() {
-
 	for {
 		fmt.Println(welcome)
 		fmt.Println(options)
@@ -70,10 +69,21 @@ func main() {
 
 type executor func() error
 
+/*
+ exeOptions es un mapa que asocia la opción ingresada por el usuario
+ con el ejecutor de dicha funcionalidad
+ */
 var exeOptions = map[int64]executor{
 	5: executeIBUUseCase,
 }
 
+/*
+ executeIBUUseCase es responsable de calcular el IBU,
+ para ello consulta al usuario los valores que necesita y 
+ carga los servicios y repositorio necesarios para el procesamiento,
+ entre ellos el servicio de estimacion de IBU,
+ el servicio cocción y el repositorio de ingredientes
+*/
 func executeIBUUseCase() error {
 	repository := repository.NewIngredientsRepository()
 	boilingService := boiling.NewService(repository)
@@ -96,6 +106,10 @@ func executeIBUUseCase() error {
 	return nil
 }
 
+/*
+ askForBoilingParams tiene como objetivo obtener del usuario
+ los valores de los parámetros del proceso de cocción
+*/
 func askForBoilingParams() (*boiling.Params, error) {
 	boilingParams := boiling.Params{}
 
@@ -153,14 +167,26 @@ func askForBoilingParams() (*boiling.Params, error) {
 	return &boilingParams, nil
 }
 
+/*
+ askForMaturationParams tiene como objetivo consultar al usuario
+ los valores de los parámetros del proceso de maduración
+*/
 func askForMaturationParams() (*maturation.Params, error) {
 	return nil, nil
 }
 
+/*
+ askForMacerationParams tiene como objetivo consultar al usuario
+ los valores de los parámetros del proceso de maceración
+*/
 func askForMacerationParams() (*maceration.Params, error) {
 	return nil, nil
 }
 
+/*
+ askForFermentationParams tiene como objetivo consultar al usuario
+ los valores de los parámetros del proceso de fermentación
+*/
 func askForFermentationParams() (*fermentation.Params, error) {
 	return nil, nil
 }

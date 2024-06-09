@@ -4,6 +4,10 @@ import (
 	"eccea/internal/brewbeer/processes/boiling"
 )
 
+/* 
+    Params contiene los parametros necesarios para el calculo del IBU,
+    en este caso contiene los parametros asociados a la cocción
+*/ 
 type Params struct {
 	Boiling boiling.Params
 }
