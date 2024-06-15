@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// service es el implementador de los metodos de proceso de coccion 
 type service struct {
 	repo ingredients.Repository
 }
@@ -17,6 +18,10 @@ func NewService(repo ingredients.Repository) Service {
 	}
 }
 
+/* 
+    Do es la implementaciòn del proceso de coccion
+    el mismo consiste 
+*/
 func (s *service) Do(params *Params, useCaseKey string) (*Results, error) {
 	var hops []ingredients.Hop
 	var estimateResults Results
