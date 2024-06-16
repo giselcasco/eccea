@@ -18,9 +18,12 @@ func NewService(repo ingredients.Repository) Service {
 	}
 }
 
-/* 
-    Do es la implementaciòn del proceso de coccion
-    el mismo consiste 
+
+/*
+    Do es la implementaciòn del proceso de coccion busca en el repositorio de ingredientes
+ los lupudo ingresados por el usuario 
+    useCaseKey hace referencia al caso de uso con el que se consulta al proceso, 
+ puede ser "ibu","flavor", "color" or "beer"
 */
 func (s *service) Do(params *Params, useCaseKey string) (*Results, error) {
 	var hops []ingredients.Hop
@@ -47,6 +50,8 @@ var funcByUseCaseKey = map[string]estimate{
 	"ibu": estimateIBU,
 }
 
+// estimateIBU es el metodo que calcula el ibu a partir de los valores en los parametros 
+// y de los datos en el repositorio de ingredientes de cada lupulo 
 func estimateIBU(params *Params, hops []ingredients.Hop, result *Results) {
 	var ibu float64
 	for _, hopAddition := range params.HopAdditions {
@@ -60,6 +65,7 @@ func estimateIBU(params *Params, hops []ingredients.Hop, result *Results) {
 	}
 }
 
+// getHop busca el lupudo en la lista de lupulos "hops" cuyo ID corresponda con "idHop"
 func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
 	for _, hop := range hops {
 		if strings.EqualFold(hop.ID(), idHop) {
@@ -69,6 +75,7 @@ func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
 	return nil
 }
 
+// calculateIBU implementa la formula de calculo del IBU de Glenn Tinseth 
 func calculateIBU(params *Params, addition HopAdditions, hop ingredients.Hop) float64 {
 	firstFactor := greatnessFactor(params.InitialDensity)
 	secondFactor := boilingTimeFactor(addition.TimeOfWork)
