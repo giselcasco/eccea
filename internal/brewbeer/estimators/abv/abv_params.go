@@ -4,6 +4,10 @@ import (
 	"eccea/internal/brewbeer/processes/fermentation"
 )
 
+/* 
+    Params contiene los parametros necesarios para el calculo del ABV,
+    en este caso contiene los parametros asociados a la fermentación
+*/ 
 type Params struct {
 	Fermentation fermentation.Params
 }

@@ -3,7 +3,7 @@ package fermentation
 import "eccea/internal/brewbeer/characteristic"
 
 type Results struct {
-	abv                   float32 // abv alcohol by volume of beer
+	abv                   string // abv alcohol by volume of beer
 	flavorCharacteristics []characteristic.Flavor
 	smellCharacteristics  []characteristic.Smell
 	colorCharacteristics  []characteristic.Color
@@ -17,7 +17,7 @@ func (r *Results) ABV() float32 {
 	return r.abv
 }
 
-func (r *Results) SetABV(alcoholByVolume float32) {
+func (r *Results) SetABV(alcoholByVolume string) {
 	r.abv = alcoholByVolume
 }
 

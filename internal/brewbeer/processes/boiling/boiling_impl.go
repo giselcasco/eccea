@@ -20,8 +20,9 @@ func NewService(repo ingredients.Repository) Service {
 
 
 /*
-    Do es la implementaciòn del proceso de coccion busca en el repositorio de ingredientes
- los lupudo ingresados por el usuario 
+    Do es la implementaciòn del proceso de coccion, de este se obtienen características del sabor, aroma y amargor, 
+  como tambien el IBU de la cerveza, para ello carga la información de los lupulos ingresados por el usuario 
+  desde el repositorio de ingredientes.
     useCaseKey hace referencia al caso de uso con el que se consulta al proceso, 
  puede ser "ibu","flavor", "color" or "beer"
 */
@@ -61,7 +62,7 @@ func estimateIBU(params *Params, hops []ingredients.Hop, result *Results) {
 	}
 
 	if ibu > 0 {
-		result.ibu = fmt.Sprintf("%.1f", ibu)
+		result.SetIBU(fmt.Sprintf("%.1f", ibu))
 	}
 }
 
