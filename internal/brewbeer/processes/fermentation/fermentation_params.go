@@ -1,6 +1,6 @@
 package fermentation
 
 type Params struct {
-	InitialDensity uint32
-	FinalDensity   uint32
+	InitialDensity float32
+	FinalDensity   float32
 }

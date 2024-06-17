@@ -1,10 +1,10 @@
 package abv
 
 type Estimation struct {
-	ABV string
+	ABV float32
 }
 
-func NewEstimation(abv string) Estimation {
+func NewEstimation(abv float32) Estimation {
 	return Estimation{
 		ABV: abv,
 	}

@@ -1,7 +1,5 @@
 package fermentation
 
-import "fmt"
-
 type service struct {
 }
 
@@ -33,7 +31,6 @@ var funcByUseCaseKey = map[string]estimate{
 
 // estimateABV es el metodo que calcula el abv a partir de los valores en los parametros
 func calculateABV(params *Params, result *Results) {
-	if abv := float32(params.InitialDensity-params.FinalDensity) * 131.25; abv > 0 {
-		result.SetABV(fmt.Sprintf("%.1f", abv))
-	}
+	abv := (params.InitialDensity - params.FinalDensity) * 131.25
+	result.SetABV(abv)
 }

@@ -131,7 +131,14 @@ func executeABVUseCase() error {
 		return estimatorError
 	}
 
-	fmt.Printf("El ABV estimado es %f: \n", abvEstimated.ABV)
+	if abvEstimated.ABV > 0 {
+		abvValue := fmt.Sprintf("%.1f", abvEstimated.ABV)
+		fmt.Printf("El ABV estimado es %f: \n", abvValue)
+		time.Sleep(2 * time.Second)
+		return nil
+	}
+
+	fmt.Printf("No fue posible calcula el ABV con los valores suministrados")
 	time.Sleep(2 * time.Second)
 	return nil
 }
