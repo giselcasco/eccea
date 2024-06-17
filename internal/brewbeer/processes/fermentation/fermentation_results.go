@@ -13,7 +13,7 @@ func NewResults() *Results {
 	return &Results{}
 }
 
-func (r *Results) ABV() float32 {
+func (r *Results) ABV() string {
 	return r.abv
 }
 

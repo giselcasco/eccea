@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"eccea/internal/brewbeer/estimators/abv"
 	"eccea/internal/brewbeer/estimators/ibu"
 	"eccea/internal/brewbeer/processes/boiling"
 	"eccea/internal/brewbeer/processes/fermentation"
@@ -70,20 +71,20 @@ func main() {
 type executor func() error
 
 /*
- exeOptions es un mapa que asocia la opción ingresada por el usuario
- con el ejecutor de dicha funcionalidad
- */
+exeOptions es un mapa que asocia la opción ingresada por el usuario
+con el ejecutor de dicha funcionalidad
+*/
 var exeOptions = map[int64]executor{
 	5: executeIBUUseCase,
 	4: executeABVUseCase,
 }
 
 /*
- executeIBUUseCase es responsable de calcular el IBU,
- para ello consulta al usuario los valores que necesita y 
- carga los servicios y repositorio necesarios para el procesamiento,
- entre ellos el servicio de estimacion de IBU,
- el servicio del proceso de cocción y el repositorio de ingredientes
+executeIBUUseCase es responsable de calcular el IBU,
+para ello consulta al usuario los valores que necesita y
+carga los servicios y repositorio necesarios para el procesamiento,
+entre ellos el servicio de estimacion de IBU,
+el servicio del proceso de cocción y el repositorio de ingredientes
 */
 func executeIBUUseCase() error {
 	repository := repository.NewIngredientsRepository()
@@ -108,11 +109,11 @@ func executeIBUUseCase() error {
 }
 
 /*
- executeABVUseCase es responsable de calcular el volumen de alcohol en la cerveza,
- para ello consulta al usuario los valores que necesita y 
- carga los servicios necesarios para dicho calculo,
- entre ellos el servicio de estimacion de ABV y
- el servicio del proceso de fermentación
+executeABVUseCase es responsable de calcular el volumen de alcohol en la cerveza,
+para ello consulta al usuario los valores que necesita y
+carga los servicios necesarios para dicho calculo,
+entre ellos el servicio de estimacion de ABV y
+el servicio del proceso de fermentación
 */
 func executeABVUseCase() error {
 	fermentationService := fermentation.NewService()
@@ -136,8 +137,8 @@ func executeABVUseCase() error {
 }
 
 /*
- askForBoilingParams tiene como objetivo obtener del usuario
- los valores de los parámetros del proceso de cocción
+askForBoilingParams tiene como objetivo obtener del usuario
+los valores de los parámetros del proceso de cocción
 */
 func askForBoilingParams() (*boiling.Params, error) {
 	boilingParams := boiling.Params{}
@@ -197,24 +198,24 @@ func askForBoilingParams() (*boiling.Params, error) {
 }
 
 /*
- askForMaturationParams tiene como objetivo consultar al usuario
- los valores de los parámetros del proceso de maduración
+askForMaturationParams tiene como objetivo consultar al usuario
+los valores de los parámetros del proceso de maduración
 */
 func askForMaturationParams() (*maturation.Params, error) {
 	return nil, nil
 }
 
 /*
- askForMacerationParams tiene como objetivo consultar al usuario
- los valores de los parámetros del proceso de maceración
+askForMacerationParams tiene como objetivo consultar al usuario
+los valores de los parámetros del proceso de maceración
 */
 func askForMacerationParams() (*maceration.Params, error) {
 	return nil, nil
 }
 
 /*
- askForFermentationParams tiene como objetivo consultar al usuario
- los valores de los parámetros del proceso de fermentación
+askForFermentationParams tiene como objetivo consultar al usuario
+los valores de los parámetros del proceso de fermentación
 */
 func askForFermentationParams() (*fermentation.Params, error) {
 	fermentationParams := fermentation.Params{}
@@ -227,10 +228,10 @@ func askForFermentationParams() (*fermentation.Params, error) {
 	}
 
 	fmt.Print("Ingrese la densidad final: ")
-	okID, errID := fmt.Scanln(&fermentationParams.FinalDensity)
-	if errID != nil || okID == 0 || fermentationParams.FinalDensity == 0 {
+	okFD, errFD := fmt.Scanln(&fermentationParams.FinalDensity)
+	if errFD != nil || okFD == 0 || fermentationParams.FinalDensity == 0 {
 		fmt.Sprintf(buildParamError, " densidad final")
-		return nil, errID
+		return nil, errFD
 	}
 
 	return &fermentationParams, nil

@@ -1,28 +1,39 @@
 package fermentation
 
+import "fmt"
+
 type service struct {
 }
 
 func NewService() Service {
-	return &service{
-	}
+	return &service{}
 }
 
 /*
-    Do es la implementaciòn del proceso de fermentacion, de este se obtienen características de menor percepción
-  y el valor de ABV (alcohol by volume)
-    useCaseKey hace referencia al caso de uso con el que se consulta al proceso,
- puede ser "abv", "smell", flavor", "color" or "beer"
+	  Do es la implementaciòn del proceso de fermentacion, de este se obtienen características de menor percepción
+	y el valor de ABV (alcohol by volume)
+	  useCaseKey hace referencia al caso de uso con el que se consulta al proceso,
+
+puede ser "abv", "smell", flavor", "color" or "beer"
 */
-func (s *service) Do(params *Params) *Results {
-    var estimateResults Results
-    if abv := calculateIBU(params); abv > 0 {
-    	estimateResults.SetABV(fmt.Sprintf("%.1f", abv))
-    }
+func (s *service) Do(params *Params, useCaseKey string) *Results {
+	estimateResults := &Results{}
+	if estimateFunc, ok := funcByUseCaseKey[useCaseKey]; ok {
+		estimateFunc(params, estimateResults)
+	}
+
 	return estimateResults
 }
 
+type estimate func(params *Params, result *Results)
+
+var funcByUseCaseKey = map[string]estimate{
+	"abv": calculateABV,
+}
+
 // estimateABV es el metodo que calcula el abv a partir de los valores en los parametros
-func calculateIBU(params *Params, result *Results) {
-	return (params.InitialDensity - params.FinalDensity) * 131.25
+func calculateABV(params *Params, result *Results) {
+	if abv := float32(params.InitialDensity-params.FinalDensity) * 131.25; abv > 0 {
+		result.SetABV(fmt.Sprintf("%.1f", abv))
+	}
 }
