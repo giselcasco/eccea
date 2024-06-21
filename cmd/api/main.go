@@ -99,11 +99,14 @@ func executeIBUUseCase() error {
 
 	ibuParams := ibu.Params{Boiling: *boilingParams}
 	ibuEstimated, estimatorError := estimator.Estimate(ibuParams)
-	if estimatorError != nil {
+	if estimatorError != nil || ibuEstimated.IBU <= 0 {
+		fmt.Printf("No fue posible calcula el IBU con los valores suministrados")
+		time.Sleep(2 * time.Second)
 		return estimatorError
 	}
 
-	fmt.Printf("El IBU estimado es %f: \n", ibuEstimated.IBU)
+	ibuValue := fmt.Sprintf("%.1f", ibuEstimated.IBU)
+	fmt.Printf("El IBU estimado es %s: \n", ibuValue)
 	time.Sleep(2 * time.Second)
 	return nil
 }
@@ -127,18 +130,14 @@ func executeABVUseCase() error {
 
 	abvParams := abv.Params{Fermentation: *fermentationParams}
 	abvEstimated, estimatorError := estimator.Estimate(abvParams)
-	if estimatorError != nil {
+	if estimatorError != nil || abvEstimated.ABV <= 0 {
+		fmt.Printf("No fue posible calcula el ABV con los valores suministrados")
+		time.Sleep(2 * time.Second)
 		return estimatorError
 	}
 
-	if abvEstimated.ABV > 0 {
-		abvValue := fmt.Sprintf("%.1f", abvEstimated.ABV)
-		fmt.Printf("El ABV estimado es %f: \n", abvValue)
-		time.Sleep(2 * time.Second)
-		return nil
-	}
-
-	fmt.Printf("No fue posible calcula el ABV con los valores suministrados")
+	abvValue := fmt.Sprintf("%.1f", abvEstimated.ABV)
+	fmt.Printf("El ABV estimado es %s: \n", abvValue)
 	time.Sleep(2 * time.Second)
 	return nil
 }
@@ -173,7 +172,7 @@ func askForBoilingParams() (*boiling.Params, error) {
 
 	hopAdditions := yes
 	for strings.EqualFold(hopAdditions, yes) {
-		hopAddition := boiling.HopAdditions{}
+		hopAddition := boiling.Hop{}
 
 		fmt.Print("Ingrese el ID del lúpulo: ")
 		okIDH, errIDH := fmt.Scanln(&hopAddition.ID)
