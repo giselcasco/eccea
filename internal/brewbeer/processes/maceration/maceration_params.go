@@ -2,42 +2,13 @@ package maceration
 
 type (
 	Params struct {
-		totalTime   uint32 // totalTime is the total in minutes time of maceration process.
-		waterAmount float32
-		additions   []MaltAddition // additions list of malts included in the process.
+		WortAmount    float64 // WortAmount es la cantidad en litros del mosto
+		MaltAdditions []Malt  // MaltAdditions is a list of malts included in the process.
 	}
 
-	MaltAddition struct {
-		id         string
-		quantity   float32 // quantity in grams.
-		timeOfWork uint32  // timeOfWork in minutes.
+	Malt struct {
+		Quantity   float64 // quantity in grams.
+		ColorSRM   float64
+		TimeOfWork uint32 // timeOfWork in minutes.
 	}
 )
-
-func NewParams(totalTime uint32, water float32, additions []MaltAddition) *Params {
-	return &Params{
-		totalTime:   totalTime,
-		waterAmount: water,
-		additions:   additions,
-	}
-}
-
-func (p Params) TotalTime() uint32 {
-	return p.totalTime
-}
-
-func (p Params) Water() float32 {
-	return p.waterAmount
-}
-
-func (p Params) Additions() []MaltAddition {
-	return p.additions
-}
-
-func NewMaltAddition(id string, quantity float32, timeOfWork uint32) *MaltAddition {
-	return &MaltAddition{
-		id:         id,
-		quantity:   quantity,
-		timeOfWork: timeOfWork,
-	}
-}

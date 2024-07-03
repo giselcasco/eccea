@@ -4,22 +4,29 @@ import (
 	"eccea/internal/brewbeer/characteristic"
 )
 
-type Results struct {
-	colorSRM              uint16
-	flavorCharacteristics []characteristic.Flavor
-	smellCharacteristics  []characteristic.Smell
-	colorCharacteristics  []characteristic.Color
-}
+type (
+	Results struct {
+		colorSRM              uint64
+		flavorCharacteristics []characteristic.Flavor
+		smellCharacteristics  []characteristic.Smell
+		colorCharacteristics  []characteristic.Color
+	}
+
+	ColorResults struct {
+		colorSRM             uint64
+		colorCharacteristics []string
+	}
+)
 
 func NewResults() *Results {
 	return &Results{}
 }
 
-func (r *Results) Color() uint16 {
+func (r *Results) Color() uint64 {
 	return r.colorSRM
 }
 
-func (r *Results) SetColor(color uint16) {
+func (r *Results) SetColor(color uint64) {
 	r.colorSRM = color
 }
 
@@ -45,4 +52,24 @@ func (r *Results) ColorCharacteristic() []characteristic.Color {
 
 func (r *Results) SmellCharacteristic() []characteristic.Smell {
 	return r.smellCharacteristics
+}
+
+func NewColorResults() *ColorResults {
+	return &ColorResults{}
+}
+
+func (r *ColorResults) Color() uint64 {
+	return r.colorSRM
+}
+
+func (r *ColorResults) SetColor(color uint64) {
+	r.colorSRM = color
+}
+
+func (r *ColorResults) ColorCharacteristic() []string {
+	return r.colorCharacteristics
+}
+
+func (r *ColorResults) SetColorCharacteristic(colorCharacteristics string) {
+	r.colorCharacteristics = colorCharacteristics
 }

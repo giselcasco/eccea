@@ -99,14 +99,14 @@ func executeIBUUseCase() error {
 
 	ibuParams := ibu.Params{Boiling: *boilingParams}
 	ibuEstimated, estimatorError := estimator.Estimate(ibuParams)
-	if estimatorError != nil || ibuEstimated.IBU <= 0 {
-		fmt.Printf("No fue posible calcula el IBU con los valores suministrados")
+	if estimatorError != nil || ibuEstimated <= 0 {
+		fmt.Printf("No fue posible calcula el IBU con los valores suministrados\r\n")
 		time.Sleep(2 * time.Second)
 		return estimatorError
 	}
 
-	ibuValue := fmt.Sprintf("%.1f", ibuEstimated.IBU)
-	fmt.Printf("El IBU estimado es %s: \n", ibuValue)
+	ibuValue := fmt.Sprintf("%.1f", ibuEstimated)
+	fmt.Printf("El IBU estimado es %s: \r\n\n", ibuValue)
 	time.Sleep(2 * time.Second)
 	return nil
 }
@@ -130,15 +130,15 @@ func executeABVUseCase() error {
 
 	abvParams := abv.Params{Fermentation: *fermentationParams}
 	abvEstimated, estimatorError := estimator.Estimate(abvParams)
-	if estimatorError != nil || abvEstimated.ABV <= 0 {
-		fmt.Printf("No fue posible calcula el ABV con los valores suministrados")
+	if estimatorError != nil || abvEstimated <= 0 {
+		fmt.Printf("No fue posible calcula el ABV con los valores suministrados\r\n")
 		time.Sleep(2 * time.Second)
 		return estimatorError
 	}
 
-	abvValue := fmt.Sprintf("%.1f", abvEstimated.ABV)
-	fmt.Printf("El ABV estimado es %s: \n", abvValue)
-	time.Sleep(2 * time.Second)
+	abvValue := fmt.Sprintf("%.1f", abvEstimated)
+	fmt.Printf("El ABV estimado es %s: \r\n", abvValue)
+	time.Sleep(3 * time.Second)
 	return nil
 }
 
@@ -149,14 +149,7 @@ los valores de los parámetros del proceso de cocción
 func askForBoilingParams() (*boiling.Params, error) {
 	boilingParams := boiling.Params{}
 
-	fmt.Print("Ingrese el tiempo total de hervor en minutos: ")
-	okTT, errTT := fmt.Scanln(&boilingParams.TotalTime)
-	if errTT != nil || okTT == 0 || boilingParams.TotalTime == 0 {
-		fmt.Sprintf(buildParamError, "tiempo total de hervor")
-		return nil, errTT
-	}
-
-	fmt.Print("Ingrese la densidad inicial: ")
+	fmt.Print("\r\nIngrese la densidad inicial: ")
 	okID, errID := fmt.Scanln(&boilingParams.InitialDensity)
 	if errID != nil || okID == 0 || boilingParams.InitialDensity == 0 {
 		fmt.Sprintf(buildParamError, " densidad inicial")
@@ -170,34 +163,33 @@ func askForBoilingParams() (*boiling.Params, error) {
 		return nil, errWA
 	}
 
-	hopAdditions := yes
-	for strings.EqualFold(hopAdditions, yes) {
+	moreAdditions := yes
+	for strings.Contains(yes, moreAdditions) {
 		hopAddition := boiling.Hop{}
 
-		fmt.Print("Ingrese el ID del lúpulo: ")
-		okIDH, errIDH := fmt.Scanln(&hopAddition.ID)
-		if errIDH != nil || okIDH == 0 || len(hopAddition.ID) == 0 {
-			fmt.Sprintf(buildParamError, "el ID del lúpulo")
-			return nil, errIDH
+		fmt.Print("Ingrese el porcentaje de Alfa-acidos del lúpulo: ")
+		okIDH, errAA := fmt.Scanln(&hopAddition.AlphaAcids)
+		if errAA != nil || okIDH == 0 || hopAddition.AlphaAcids == 0 {
+			fmt.Sprintf(buildParamError, "el porcentaje de Alfa-acidos")
+			return nil, errAA
 		}
 
 		fmt.Print("Ingrese la cantidad del lúpulo en gramos: ")
 		okQ, errQ := fmt.Scanln(&hopAddition.Quantity)
-		if errQ != nil || okQ == 0 || len(hopAddition.ID) == 0 {
-			fmt.Sprintf(buildParamError, "el ID del lúpulo")
-			return nil, errQ
+		if errQ != nil || okQ == 0 || hopAddition.Quantity == 0 {
+			fmt.Sprintf(buildParamError, "la cantidad del lúpulo en gramos")
 		}
 
 		fmt.Print("Ingrese el tiempo de trabajo del lúpulo en minutos: ")
 		okTOW, errTOW := fmt.Scanln(&hopAddition.TimeOfWork)
-		if errTOW != nil || okTOW == 0 || len(hopAddition.ID) == 0 {
-			fmt.Sprintf(buildParamError, "el ID del lúpulo")
+		if errTOW != nil || okTOW == 0 || hopAddition.TimeOfWork == 0 {
+			fmt.Sprintf(buildParamError, "el tiempo de trabajo del lúpulo")
 			return nil, errTOW
 		}
 
 		boilingParams.HopAdditions = append(boilingParams.HopAdditions, hopAddition)
 		fmt.Print("Desea ingresar otro lúpulo? yes/no --> ")
-		fmt.Scanln(&hopAdditions)
+		fmt.Scanln(&moreAdditions)
 	}
 
 	return &boilingParams, nil
@@ -208,7 +200,16 @@ askForMaturationParams tiene como objetivo consultar al usuario
 los valores de los parámetros del proceso de maduración
 */
 func askForMaturationParams() (*maturation.Params, error) {
-	return nil, nil
+	params := &maturation.Params{}
+
+	fmt.Print("\r\nIngrese el tiempo de maduración en horas: ")
+	ok, err := fmt.Scanln(&params.TotalTime)
+	if err != nil || ok == 0 || params.TotalTime == 0 {
+		fmt.Sprintf(buildParamError, "el tiempo de maduracion")
+		return nil, err
+	}
+
+	return params, nil
 }
 
 /*
@@ -216,7 +217,16 @@ askForMacerationParams tiene como objetivo consultar al usuario
 los valores de los parámetros del proceso de maceración
 */
 func askForMacerationParams() (*maceration.Params, error) {
-	return nil, nil
+	params := &maceration.Params{}
+
+	fmt.Print("\r\nIngrese la cantidad de litros del mosto: ")
+	ok, err := fmt.Scanln(&params.WortAmount)
+	if err != nil || ok == 0 || params.WortAmount == 0 {
+		fmt.Sprintf(buildParamError, "la cantidad de litros del mosto")
+		return nil, err
+	}
+
+	return params, nil
 }
 
 /*
@@ -226,17 +236,17 @@ los valores de los parámetros del proceso de fermentación
 func askForFermentationParams() (*fermentation.Params, error) {
 	fermentationParams := fermentation.Params{}
 
-	fmt.Print("Ingrese la densidad inicial: ")
+	fmt.Print("\r\nIngrese la densidad inicial: ")
 	okID, errID := fmt.Scanln(&fermentationParams.InitialDensity)
 	if errID != nil || okID == 0 || fermentationParams.InitialDensity == 0 {
-		fmt.Sprintf(buildParamError, " densidad inicial")
+		fmt.Sprintf(buildParamError, "la densidad inicial")
 		return nil, errID
 	}
 
 	fmt.Print("Ingrese la densidad final: ")
 	okFD, errFD := fmt.Scanln(&fermentationParams.FinalDensity)
 	if errFD != nil || okFD == 0 || fermentationParams.FinalDensity == 0 {
-		fmt.Sprintf(buildParamError, " densidad final")
+		fmt.Sprintf(buildParamError, "la densidad final")
 		return nil, errFD
 	}
 

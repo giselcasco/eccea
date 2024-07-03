@@ -14,12 +14,13 @@ import (
 func TestShould_EstimateSuccess_When_NilParams(t *testing.T) {
 	service := &boilingmocks.ServiceMock{}
 	estimator := ibu.NewIBUImpl(service)
+	ibuValue := 0.1
 
-	service.On("Do", &boiling.Params{}, "ibu").Return(&boiling.Results{}, nil)
+	service.On("EstimateIBU", &boiling.Params{}).Return(ibuValue, nil)
 
 	response, err := estimator.Estimate(ibu.Params{})
 
-	assert.Equal(t, response, ibu.Estimation{})
+	assert.Equal(t, response, ibuValue)
 	assert.Equal(t, err, nil)
 }
 func TestShould_EstimateFails_When_ServiceFails(t *testing.T) {
@@ -27,7 +28,7 @@ func TestShould_EstimateFails_When_ServiceFails(t *testing.T) {
 	estimator := ibu.NewIBUImpl(service)
 	errorMock := errors.New("something wrong")
 
-	service.On("Do", mock.Anything, mock.Anything).Return(nil, errorMock)
+	service.On("EstimateIBU", mock.Anything, mock.Anything).Return(0, errorMock)
 
 	response, err := estimator.Estimate(ibu.Params{})
 

@@ -14,13 +14,17 @@ import (
 func TestShould_EstimateSuccess_When_NilParams(t *testing.T) {
 	service := &fermentationmocks.ServiceMock{}
 	estimator := abv.NewABVImpl(service)
-
-	service.On("Do", &fermentation.Params{}, "abv").Return(&fermentation.Results{}, nil)
+	abvValue := 5.9
+	service.On("CalculateABV", &fermentation.Params{}).Return(abvValue, nil)
 
 	response, err := estimator.Estimate(abv.Params{})
 
-	assert.Equal(t, response, abv.Estimation{})
+	assert.Equal(t, response, abvValue)
 	assert.Equal(t, err, nil)
+}
+
+func float(f float64) {
+	panic("unimplemented")
 }
 
 func TestShould_EstimateFails_When_ServiceFails(t *testing.T) {

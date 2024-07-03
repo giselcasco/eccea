@@ -14,21 +14,21 @@ type ServiceMock struct {
 }
 
 // Do provides a mock function with given fields: params, useCaseKey
-func (_m *ServiceMock) Do(params *boiling.Params, useCaseKey string) (*boiling.Results, error) {
-	ret := _m.Called(params, useCaseKey)
+func (_m *ServiceMock) EstimateIBU(params *boiling.Params) (float64, error) {
+	ret := _m.Called(params)
 
-	var r0 *boiling.Results
-	if rf, ok := ret.Get(0).(func(*boiling.Params, string) *boiling.Results); ok {
-		r0 = rf(params, useCaseKey)
+	var r0 float64
+	if rf, ok := ret.Get(0).(func(*boiling.Params) float64); ok {
+		r0 = rf(params)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*boiling.Results)
+			r0 = ret.Get(0).(float64)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*boiling.Params, string) error); ok {
-		r1 = rf(params, useCaseKey)
+	if rf, ok := ret.Get(1).(func(*boiling.Params) error); ok {
+		r1 = rf(params)
 	} else {
 		r1 = ret.Error(1)
 	}

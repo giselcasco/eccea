@@ -5,18 +5,14 @@ import (
 )
 
 type Hop struct {
-	/*
-		FlavorCharacteristics    []characteristic.Flavor
-		SmellCharacteristics     []characteristic.Smell
-		MouthfeelCharacteristics []characteristic.Mouthfeel
-	*/
+	ID         string
 	AlphaAcids float64
 	BetaAcids  float64
 }
 
-func (h Hop) ToDomain(idHop string) *ingredients.Hop {
+func (h Hop) ToDomain() *ingredients.Hop {
 	hop := &ingredients.Hop{}
-	hop.SetID(idHop)
+	hop.SetID(h.ID)
 	hop.SetAlphaAcids(h.AlphaAcids)
 	hop.SetBetaAcids(h.BetaAcids)
 	return hop

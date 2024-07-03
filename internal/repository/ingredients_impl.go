@@ -21,14 +21,14 @@ func (i *ingredientRepo) GetMalt(idMalt string) (*ingredients.Malt, error) {
 	return nil, nil
 }
 
-func (i *ingredientRepo) GetHop(idHop string) (*ingredients.Hop, error) {
+func (i *ingredientRepo) GetHop(hopID string) (*ingredients.Hop, error) {
 	hop := &responses.Hop{}
-	pathHopResources := fmt.Sprintf("internal/resources/hops/%s.json", idHop)
-	if i.getResource(pathHopResources, hop); hop != nil {
-		return hop.ToDomain(idHop), nil
+	pathHopResources := fmt.Sprintf("internal/resources/hops/%s.json", hopID)
+	if i.getResource(pathHopResources, hop); hop.ID == hopID {
+		return hop.ToDomain(), nil
 	}
 
-	return nil, errors.New("El lúpulo no se encuentra en nuestra base de datos")
+	return nil, errors.New("el lupulo no se encuentra en nuestra base de datos")
 }
 
 func (i *ingredientRepo) GetYeast(idYeast string) (*ingredients.Yeast, error) {

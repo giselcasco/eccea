@@ -14,15 +14,15 @@ type ServiceMock struct {
 }
 
 // Do provides a mock function with given fields: params, useCaseKey
-func (_m *ServiceMock) Do(params *fermentation.Params, useCaseKey string) *fermentation.Results {
-	ret := _m.Called(params, useCaseKey)
+func (_m *ServiceMock) CalculateABV(params *fermentation.Params) float64 {
+	ret := _m.Called(params)
 
-	var r0 *fermentation.Results
-	if rf, ok := ret.Get(0).(func(*fermentation.Params, string) *fermentation.Results); ok {
-		r0 = rf(params, useCaseKey)
+	var r0 float64
+	if rf, ok := ret.Get(0).(func(*fermentation.Params) float64); ok {
+		r0 = rf(params)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*fermentation.Results)
+			r0 = ret.Get(0).(float64)
 		}
 	}
 

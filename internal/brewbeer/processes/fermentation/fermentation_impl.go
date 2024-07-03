@@ -7,30 +7,7 @@ func NewService() Service {
 	return &service{}
 }
 
-/*
-	  Do es la implementaciòn del proceso de fermentacion, de este se obtienen características de menor percepción
-	y el valor de ABV (alcohol by volume)
-	  useCaseKey hace referencia al caso de uso con el que se consulta al proceso,
-
-puede ser "abv", "smell", flavor", "color" or "beer"
-*/
-func (s *service) Do(params *Params, useCaseKey string) *Results {
-	estimateResults := &Results{}
-	if estimateFunc, ok := funcByUseCaseKey[useCaseKey]; ok {
-		estimateFunc(params, estimateResults)
-	}
-
-	return estimateResults
-}
-
-type estimate func(params *Params, result *Results)
-
-var funcByUseCaseKey = map[string]estimate{
-	"abv": calculateABV,
-}
-
-// estimateABV es el metodo que calcula el abv a partir de los valores en los parametros
-func calculateABV(params *Params, result *Results) {
-	abv := (params.InitialDensity - params.FinalDensity) * 131.25
-	result.SetABV(abv)
+// estimateABV es el método que calcula el abv a partir de los valores en los parametros
+func (s *service) CalculateABV(params *Params) float64 {
+	return (params.InitialDensity - params.FinalDensity) * 131.25
 }

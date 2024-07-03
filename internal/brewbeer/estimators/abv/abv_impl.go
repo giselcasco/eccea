@@ -13,13 +13,9 @@ func NewABVImpl(service fermentation.Service) ABV {
 	}
 }
 
-const useCaseKey = "abv"
-
 // implementación para el calculo de la estimación del ABV
-func (abv *abvImpl) Estimate(params Params) (Estimation, error) {
-	result := abv.service.Do(&params.Fermentation, useCaseKey)
+func (abv *abvImpl) Estimate(params Params) (float64, error) {
+	result := abv.service.CalculateABV(&params.Fermentation)
 
-	return Estimation{
-		ABV: result.ABV(),
-	}, nil
+	return result, nil
 }

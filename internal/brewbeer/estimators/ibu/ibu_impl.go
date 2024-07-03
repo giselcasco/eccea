@@ -13,16 +13,12 @@ func NewIBUImpl(service boiling.Service) IBU {
 	}
 }
 
-const useCaseKey = "ibu"
-
 // implementación para el calculo de la estimación del IBU
-func (ibu *ibuImpl) Estimate(params Params) (Estimation, error) {
-	result, err := ibu.service.Do(&params.Boiling, useCaseKey)
+func (ibu *ibuImpl) Estimate(params Params) (float64, error) {
+	result, err := ibu.service.EstimateIBU(&params.Boiling)
 	if err != nil {
-		return Estimation{}, err
+		return 0, err
 	}
 
-	return Estimation{
-		IBU: result.IBU(),
-	}, nil
+	return result, nil
 }
