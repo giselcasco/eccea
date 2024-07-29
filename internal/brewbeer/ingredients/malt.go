@@ -6,11 +6,11 @@ import (
 
 type (
 	Malt struct {
-		id                    string
+		nameID                string
 		flavorCharacteristics []characteristic.Flavor
 		smellCharacteristics  []characteristic.Smell
 		colorCharacteristics  []characteristic.Color
-		colorSRM              uint16
+		colorSRM              float64
 		temperatureOfUse      TemperatureRange
 		extractFineGrind      float32
 		extractCoarseGrind    float32
@@ -21,10 +21,34 @@ type (
 		min float32
 		max float32
 	}
+
+	MaltBuilder struct {
+		malt *Malt
+	}
 )
 
-func (malt *Malt) ID() string {
-	return malt.id
+func NewMaltBuilder() *MaltBuilder {
+	return &MaltBuilder{}
+}
+
+func (mb *MaltBuilder) NameID(nameID string) {
+	mb.malt.nameID = nameID
+}
+
+func (mb *MaltBuilder) ColorCharacteristics(ccharact []characteristic.Color) {
+	mb.malt.colorCharacteristics = ccharact
+}
+
+func (mb *MaltBuilder) ColorSRM(color float64) {
+	mb.malt.colorSRM = color
+}
+
+func (mb *MaltBuilder) Build() *Malt {
+	return mb.malt
+}
+
+func (malt *Malt) NameID() string {
+	return malt.nameID
 }
 
 func (malt *Malt) FlavorCharacteristics() []characteristic.Flavor {
@@ -53,6 +77,10 @@ func (malt *Malt) ExtractCoarseGrind() float32 {
 
 func (malt *Malt) DiastaticPower() float32 {
 	return malt.diastaticPower
+}
+
+func (malt *Malt) ColorSRM() float64 {
+	return malt.colorSRM
 }
 
 func (temperature *TemperatureRange) Min() float32 {

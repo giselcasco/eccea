@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"eccea/internal/brewbeer/estimators/abv"
+	"eccea/internal/brewbeer/estimators/color"
 	"eccea/internal/brewbeer/estimators/ibu"
 	"eccea/internal/brewbeer/processes/boiling"
 	"eccea/internal/brewbeer/processes/fermentation"
@@ -77,14 +78,17 @@ con el ejecutor de dicha funcionalidad
 var exeOptions = map[int64]executor{
 	5: executeIBUUseCase,
 	4: executeABVUseCase,
+	3: executeColorUseCase,
 }
 
 /*
-executeIBUUseCase es responsable de calcular el IBU,
+	executeIBUUseCase es responsable de calcular el IBU,
+
 para ello consulta al usuario los valores que necesita y
 carga los servicios y repositorio necesarios para el procesamiento,
 entre ellos el servicio de estimacion de IBU,
-el servicio del proceso de cocción y el repositorio de ingredientes
+el servicio del proceso de cocción
+y el repositorio de ingredientes
 */
 func executeIBUUseCase() error {
 	repository := repository.NewIngredientsRepository()
@@ -112,7 +116,8 @@ func executeIBUUseCase() error {
 }
 
 /*
-executeABVUseCase es responsable de calcular el volumen de alcohol en la cerveza,
+	executeABVUseCase es responsable de calcular el volumen de alcohol en la cerveza,
+
 para ello consulta al usuario los valores que necesita y
 carga los servicios necesarios para dicho calculo,
 entre ellos el servicio de estimacion de ABV y
@@ -140,6 +145,50 @@ func executeABVUseCase() error {
 	fmt.Printf("El ABV estimado es %s: \r\n", abvValue)
 	time.Sleep(3 * time.Second)
 	return nil
+}
+
+/*
+	executeColorUseCase es responsable de calcular
+
+el valor del color resultante y las caracteristicas del color asociadas,
+para ello consulta al usuario los valores que necesita y
+carga los servicios y repositorio necesarios para el procesamiento,
+entre ellos el servicio de estimacion de color,
+el servicio del proceso de maceración,
+el servicio del proceso de maduración
+y el repositorio de ingredientes
+*/
+func executeColorUseCase() error {
+	repository := repository.NewIngredientsRepository()
+	macerationService := maceration.NewService(repository)
+	maturationService := maturation.NewService()
+	estimator := color.NewColorImpl(macerationService, maturationService)
+
+	macerationParams, err := askForMacerationParams()
+	if err != nil {
+		fmt.Println(buildParamsError)
+		return err
+	}
+
+	maturationParams, err := askForMaturationParams()
+	if err != nil {
+		fmt.Println(buildParamsError)
+		return err
+	}
+	colorParams := color.Params{Maceration: *macerationParams, Maturation: *maturationParams}
+	colorEstimated, estimatorError := estimator.Estimate(colorParams)
+	// TODO mostrar resultados
+	if estimatorError != nil || colorEstimated == nil {
+		fmt.Printf("No fue posible estimar el color con los valores suministrados\r\n")
+		time.Sleep(2 * time.Second)
+		return estimatorError
+	}
+
+	fmt.Printf("Segun la cantidad de días de maduración, se estima que la cerveza "+
+		"tendrá %s: \r\n\n", colorEstimated.ColorIntensityDescription)
+	time.Sleep(2 * time.Second)
+	return nil
+
 }
 
 /*
@@ -202,9 +251,9 @@ los valores de los parámetros del proceso de maduración
 func askForMaturationParams() (*maturation.Params, error) {
 	params := &maturation.Params{}
 
-	fmt.Print("\r\nIngrese el tiempo de maduración en horas: ")
-	ok, err := fmt.Scanln(&params.TotalTime)
-	if err != nil || ok == 0 || params.TotalTime == 0 {
+	fmt.Print("\r\nIngrese el tiempo de maduración en días: ")
+	ok, err := fmt.Scanln(&params.NumberOfDays)
+	if err != nil || ok == 0 || params.NumberOfDays == 0 {
 		fmt.Sprintf(buildParamError, "el tiempo de maduracion")
 		return nil, err
 	}
@@ -217,6 +266,7 @@ askForMacerationParams tiene como objetivo consultar al usuario
 los valores de los parámetros del proceso de maceración
 */
 func askForMacerationParams() (*maceration.Params, error) {
+	var totalQuantity float64
 	params := &maceration.Params{}
 
 	fmt.Print("\r\nIngrese la cantidad de litros del mosto: ")
@@ -226,6 +276,30 @@ func askForMacerationParams() (*maceration.Params, error) {
 		return nil, err
 	}
 
+	moreAdditions := yes
+	for strings.Contains(yes, moreAdditions) {
+		maltAddition := maceration.Malt{}
+
+		fmt.Print("Ingrese el nombre de la malta: ")
+		ok, err := fmt.Scanln(&maltAddition.NameID)
+		if err != nil || ok == 0 || len(maltAddition.NameID) == 0 {
+			fmt.Sprintf(buildParamError, "el nombre de la malta")
+			return nil, err
+		}
+
+		fmt.Print("Ingrese la cantidad en gramos de dicha malta: ")
+		okQ, errQ := fmt.Scanln(&maltAddition.Quantity)
+		if errQ != nil || okQ == 0 || maltAddition.Quantity == 0 {
+			fmt.Sprintf(buildParamError, "la cantidad en gramos de la malta")
+		}
+
+		totalQuantity += maltAddition.Quantity
+		params.MaltAdditions = append(params.MaltAdditions, maltAddition)
+		fmt.Print("Desea ingresar otra malta? yes/no --> ")
+		fmt.Scanln(&moreAdditions)
+	}
+
+	params.TotalQuantity = totalQuantity
 	return params, nil
 }
 

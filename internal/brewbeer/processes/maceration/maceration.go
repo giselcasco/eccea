@@ -1,5 +1,5 @@
 package maceration
 
 type Service interface {
-	EstimateColor(params *Params) *ColorResults
+	EstimateColor(params *Params) (*ColorResults, error)
 }

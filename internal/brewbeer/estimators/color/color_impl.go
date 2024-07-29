@@ -1,7 +1,6 @@
 package color
 
 import (
-	"eccea/internal/brewbeer/characteristic"
 	"eccea/internal/brewbeer/processes/maceration"
 	"eccea/internal/brewbeer/processes/maturation"
 )
@@ -21,7 +20,15 @@ func NewColorImpl(macerationServ maceration.Service, maturationServ maturation.S
 
 // Estimate es la implementación para el calculo de la estimación del color final
 // en unidades de SRM y caracteristicas asociadas al color
-func (c *colorImpl) Estimate(params Params) *Estimation {
-	results := c.macerationService.EstimateColor(&params.Maceration)
-	return NewEstimation(results.Color(), []characteristic.Color{})
+func (c *colorImpl) Estimate(params Params) (*Estimation, error) {
+	results, err := c.macerationService.EstimateColor(&params.Maceration)
+	if err != nil {
+		return nil, err
+	}
+	colorIntensityDescription := c.maturationService.EstimateColor(&params.Maturation)
+	return NewEstimation(
+		results.Color(),
+		results.ColorDescription(),
+		colorIntensityDescription,
+		results.ColorCharacteristic()), nil
 }

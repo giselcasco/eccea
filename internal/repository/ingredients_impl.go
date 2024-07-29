@@ -2,6 +2,7 @@ package repository
 
 import (
 	"bytes"
+	"eccea/internal/brewbeer/characteristic"
 	"eccea/internal/brewbeer/ingredients"
 	"eccea/internal/repository/responses"
 	"encoding/json"
@@ -18,7 +19,15 @@ func NewIngredientsRepository() ingredients.Repository {
 }
 
 func (i *ingredientRepo) GetMalt(idMalt string) (*ingredients.Malt, error) {
-	return nil, nil
+	// TODO getMalt from Document
+	colorCharacts := []characteristic.Color{{
+		Type:        1,
+		Description: characteristic.GoldColor,
+	}}
+	maltBuilder := ingredients.NewMaltBuilder()
+	maltBuilder.ColorSRM(10)
+	maltBuilder.ColorCharacteristics(colorCharacts)
+	return maltBuilder.Build(), nil
 }
 
 func (i *ingredientRepo) GetHop(hopID string) (*ingredients.Hop, error) {

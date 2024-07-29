@@ -2,10 +2,20 @@ package maturation
 
 import "eccea/internal/brewbeer/characteristic"
 
-type Results struct {
-	flavorCharacteristics []characteristic.Flavor
-	colorCharacteristics  []characteristic.Color
-}
+type (
+	Results struct {
+		flavorCharacteristics []characteristic.Flavor
+		colorCharacteristics  []characteristic.Color
+	}
+
+	ColorResults struct {
+		colorIntensity string
+	}
+
+	FlavorResults struct {
+		flavorCharacteristics []characteristic.Flavor
+	}
+)
 
 func NewResults() *Results {
 	return &Results{}
@@ -25,4 +35,8 @@ func (r *Results) FlavorCharacteristic() []characteristic.Flavor {
 
 func (r *Results) ColorCharacteristic() []characteristic.Color {
 	return r.colorCharacteristics
+}
+
+func (r *ColorResults) ColorIntensity() string {
+	return r.colorIntensity
 }

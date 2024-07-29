@@ -1,20 +1,17 @@
 package maceration
 
-import (
-	"eccea/internal/brewbeer/characteristic"
-)
-
 type (
 	Results struct {
 		colorSRM              uint64
-		flavorCharacteristics []characteristic.Flavor
-		smellCharacteristics  []characteristic.Smell
-		colorCharacteristics  []characteristic.Color
+		flavorCharacteristics string
+		smellCharacteristics  string
+		colorCharacteristics  string
 	}
 
 	ColorResults struct {
 		colorSRM             uint64
-		colorCharacteristics []string
+		colorDescription     string
+		colorCharacteristics string
 	}
 )
 
@@ -30,27 +27,27 @@ func (r *Results) SetColor(color uint64) {
 	r.colorSRM = color
 }
 
-func (r *Results) AddFlavorCharacteristic(flavor characteristic.Flavor) {
-	r.flavorCharacteristics = append(r.flavorCharacteristics, flavor)
+func (r *Results) SetFlavorCharacteristic(flavorCharacteristic string) {
+	r.flavorCharacteristics = flavorCharacteristic
 }
 
-func (r *Results) AddColorCharacteristic(color characteristic.Color) {
-	r.colorCharacteristics = append(r.colorCharacteristics, color)
+func (r *Results) SetColorCharacteristic(colorCharacteristic string) {
+	r.colorCharacteristics = colorCharacteristic
 }
 
-func (r *Results) AddSmellCharacteristic(smell characteristic.Smell) {
-	r.smellCharacteristics = append(r.smellCharacteristics, smell)
+func (r *Results) SetSmellCharacteristic(smellCharacteristic string) {
+	r.smellCharacteristics = smellCharacteristic
 }
 
-func (r *Results) FlavorCharacteristic() []characteristic.Flavor {
+func (r *Results) FlavorCharacteristic() string {
 	return r.flavorCharacteristics
 }
 
-func (r *Results) ColorCharacteristic() []characteristic.Color {
+func (r *Results) ColorCharacteristic() string {
 	return r.colorCharacteristics
 }
 
-func (r *Results) SmellCharacteristic() []characteristic.Smell {
+func (r *Results) SmellCharacteristic() string {
 	return r.smellCharacteristics
 }
 
@@ -66,10 +63,18 @@ func (r *ColorResults) SetColor(color uint64) {
 	r.colorSRM = color
 }
 
-func (r *ColorResults) ColorCharacteristic() []string {
+func (r *ColorResults) ColorDescription() string {
+	return r.colorDescription
+}
+
+func (r *ColorResults) SetColorDescription(colorDes string) {
+	r.colorDescription = colorDes
+}
+
+func (r *ColorResults) ColorCharacteristic() string {
 	return r.colorCharacteristics
 }
 
-func (r *ColorResults) SetColorCharacteristic(colorCharacteristics string) {
-	r.colorCharacteristics = colorCharacteristics
+func (r *ColorResults) SetColorCharacteristic(colorCharacteristic string) {
+	r.colorCharacteristics = colorCharacteristic
 }

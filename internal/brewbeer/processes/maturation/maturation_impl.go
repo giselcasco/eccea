@@ -1,19 +1,26 @@
 package maturation
 
-import (
-	"eccea/internal/brewbeer/ingredients"
-)
-
 type service struct {
-	repo ingredients.Repository
 }
 
-func NewService(repo ingredients.Repository) Service {
-	return &service{
-		repo: repo,
+func NewService() Service {
+	return &service{}
+}
+
+func (s *service) EstimateColor(params *Params) string {
+	var mapColorIntensity = map[uint64]string{
+		7:   "Alta turbidez, color opaco.",
+		14:  "Disminución de la turbidez, color más claro.",
+		30:  "Alta claridad, color definido.",
+		100: "Máxima pureza y claridad del color.",
 	}
-}
 
-func (s *service) Do(params *Params) *Results {
-	return nil
+	if params.NumberOfDays > 0 {
+		for days, description := range mapColorIntensity {
+			if params.NumberOfDays <= days {
+				return description
+			}
+		}
+	}
+	return ""
 }

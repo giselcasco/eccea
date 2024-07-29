@@ -1,5 +1,5 @@
 package maturation
 
 type Params struct {
-	TotalTime uint64 // TotalTime is the total time in hours of maturation process.
+	NumberOfDays uint64 // TotalTime is the total time in days of maturation process.
 }
