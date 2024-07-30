@@ -177,16 +177,21 @@ func executeColorUseCase() error {
 	}
 	colorParams := color.Params{Maceration: *macerationParams, Maturation: *maturationParams}
 	colorEstimated, estimatorError := estimator.Estimate(colorParams)
-	// TODO mostrar resultados
 	if estimatorError != nil || colorEstimated == nil {
 		fmt.Printf("No fue posible estimar el color con los valores suministrados\r\n")
 		time.Sleep(2 * time.Second)
 		return estimatorError
 	}
 
-	fmt.Printf("Segun la cantidad de días de maduración, se estima que la cerveza "+
-		"tendrá %s: \r\n\n", colorEstimated.ColorIntensityDescription)
-	time.Sleep(2 * time.Second)
+	fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá: \r\n\n"+
+		"COLOR SRM %d - %s \r\n Caracteristicas del color: \r\n %s\r\n",
+		colorEstimated.ColorSRM,
+		colorEstimated.ColorDescription,
+		colorEstimated.ColorCharacteristics)
+	fmt.Printf("Segun la cantidad de días de maduración, se estima que la cerveza tendrá %s: \r\n\n",
+		colorEstimated.ColorIntensityDescription)
+
+	time.Sleep(3 * time.Second)
 	return nil
 
 }

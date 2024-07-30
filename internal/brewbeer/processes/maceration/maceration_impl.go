@@ -3,6 +3,7 @@ package maceration
 import (
 	"eccea/internal/brewbeer/characteristic"
 	"eccea/internal/brewbeer/ingredients"
+	"errors"
 )
 
 type (
@@ -26,6 +27,10 @@ func NewService(repo ingredients.Repository) Service {
 }
 
 func (s *service) EstimateColor(params *Params) (*ColorResults, error) {
+	if params == nil {
+		return nil, errors.New("nil params error")
+	}
+
 	malts, err := s.getMalts(params.MaltAdditions, params.TotalQuantity)
 	if err != nil {
 		return nil, err
