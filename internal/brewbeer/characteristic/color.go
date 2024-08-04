@@ -27,7 +27,7 @@ const (
 )
 
 var mapTypeAdjetives = map[TypeAdjetives][]string{
-	1: {"suaves", "marcadas", "intensas"},
+	1: {"sutiles", "suaves", "marcadas", "intensas"},
 }
 
 // GetDescriptionMaltColor devuelve la descripcion del color teniendo en cuenta

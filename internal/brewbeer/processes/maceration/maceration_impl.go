@@ -4,6 +4,7 @@ import (
 	"eccea/internal/brewbeer/characteristic"
 	"eccea/internal/brewbeer/ingredients"
 	"errors"
+	"math"
 )
 
 type (
@@ -52,7 +53,7 @@ func (s *service) getMalts(malts []Malt, totalQuantity float64) ([]MaltParam, er
 			return nil, err
 		}
 
-		proportion = (totalQuantity / 100) * m.Quantity
+		proportion = (totalQuantity * 100) / m.Quantity
 		maltParam := MaltParam{
 			NameID:               m.NameID,
 			ColorSRM:             malt.ColorSRM(),
@@ -68,7 +69,7 @@ func (s *service) getMalts(malts []Malt, totalQuantity float64) ([]MaltParam, er
 func (s *service) calculateFinalColorSRM(params *Params, malts []MaltParam) float64 {
 	var sum float64
 	for _, m := range malts {
-		sum = +(m.Quantity * m.ColorSRM)
+		sum += (m.Quantity / 1000) * m.ColorSRM
 	}
 
 	if params.WortAmount > 0 {
@@ -80,12 +81,13 @@ func (s *service) calculateFinalColorSRM(params *Params, malts []MaltParam) floa
 
 func (s *service) buildResult(colorFSRM float64, malts []MaltParam) *ColorResults {
 	var (
+		colorF       = uint64(math.Round(colorFSRM))
 		maltCharacts string
 		result       ColorResults
 	)
 	if colorFSRM > 0 {
-		result.SetColor(uint64(colorFSRM))
-		result.SetColorDescription(s.getDescriptionColor(colorFSRM))
+		result.SetColor(colorF)
+		result.SetColorDescription(s.getDescriptionColor(colorF))
 	}
 
 	for _, mCharacts := range malts {
@@ -95,6 +97,7 @@ func (s *service) buildResult(colorFSRM float64, malts []MaltParam) *ColorResult
 		}
 	}
 
+	result.SetColorCharacteristic(maltCharacts)
 	return &result
 }
 func (s *service) buildColorCharacteristicsDescription(maltParam MaltParam) string {
@@ -116,8 +119,9 @@ func (s *service) getConnector(index, elements int) string {
 	return ", "
 }
 
-func (s *service) getDescriptionColor(colorSRM float64) string {
-	var mapColorDescription = map[float64]string{
+func (s *service) getDescriptionColor(colorSRM uint64) string {
+	var daysCompare = uint64(3)
+	var mapColorDescription = map[uint64]string{
 		3:   "Pajoso",
 		4:   "Amarillo",
 		6:   "Dorado",
@@ -129,11 +133,11 @@ func (s *service) getDescriptionColor(colorSRM float64) string {
 		100: "Negro",
 	}
 
-	for days, description := range mapColorDescription {
-		if colorSRM <= days {
-			return description
+	for days := range mapColorDescription {
+		if colorSRM <= days && (daysCompare > days || daysCompare <= colorSRM) {
+			daysCompare = days
 		}
 	}
 
-	return ""
+	return mapColorDescription[daysCompare]
 }

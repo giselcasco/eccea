@@ -28,7 +28,9 @@ type (
 )
 
 func NewMaltBuilder() *MaltBuilder {
-	return &MaltBuilder{}
+	return &MaltBuilder{
+		malt: &Malt{},
+	}
 }
 
 func (mb *MaltBuilder) NameID(nameID string) {
