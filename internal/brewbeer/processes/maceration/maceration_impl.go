@@ -104,7 +104,7 @@ func (s *service) buildColorCharacteristicsDescription(maltParam MaltParam) stri
 	var colorCharacteristicsDescription string
 	elements := len(maltParam.ColorCharacteristics)
 	for index, colorCharacterisc := range maltParam.ColorCharacteristics {
-		colorCharacteristicsDescription += colorCharacterisc.GetDescriptionMaltColor(maltParam.Proportion)
+		colorCharacteristicsDescription += colorCharacterisc.GetDescriptionColor(maltParam.Proportion)
 		if elements > 1 {
 			colorCharacteristicsDescription += s.getConnector(index, elements)
 		}

@@ -1,25 +1,21 @@
 package ingredients
 
-import (
-	"eccea/internal/brewbeer/characteristic"
-)
-
 type (
 	Malt struct {
-		nameID                string
-		flavorCharacteristics []characteristic.Flavor
-		smellCharacteristics  []characteristic.Smell
-		colorCharacteristics  []characteristic.Color
+		name                  string
+		flavorCharacteristics []Flavor
+		smellCharacteristics  []Smell
+		colorCharacteristics  []Color
 		colorSRM              float64
 		temperatureOfUse      TemperatureRange
-		extractFineGrind      float32
-		extractCoarseGrind    float32
-		diastaticPower        float32
+		extractFineGrind      float64
+		extractCoarseGrind    float64
+		diastaticPower        float64
 	}
 
 	TemperatureRange struct {
-		min float32
-		max float32
+		min float64
+		max float64
 	}
 
 	MaltBuilder struct {
@@ -33,11 +29,11 @@ func NewMaltBuilder() *MaltBuilder {
 	}
 }
 
-func (mb *MaltBuilder) NameID(nameID string) {
-	mb.malt.nameID = nameID
+func (mb *MaltBuilder) NameID(name string) {
+	mb.malt.name = name
 }
 
-func (mb *MaltBuilder) ColorCharacteristics(ccharact []characteristic.Color) {
+func (mb *MaltBuilder) ColorCharacteristics(ccharact []Color) {
 	mb.malt.colorCharacteristics = ccharact
 }
 
@@ -49,19 +45,19 @@ func (mb *MaltBuilder) Build() *Malt {
 	return mb.malt
 }
 
-func (malt *Malt) NameID() string {
-	return malt.nameID
+func (malt *Malt) Name() string {
+	return malt.name
 }
 
-func (malt *Malt) FlavorCharacteristics() []characteristic.Flavor {
+func (malt *Malt) FlavorCharacteristics() []Flavor {
 	return malt.flavorCharacteristics
 }
 
-func (malt *Malt) SmellCharacteristics() []characteristic.Smell {
+func (malt *Malt) SmellCharacteristics() []Smell {
 	return malt.smellCharacteristics
 }
 
-func (malt *Malt) ColorCharacteristics() []characteristic.Color {
+func (malt *Malt) ColorCharacteristics() []Color {
 	return malt.colorCharacteristics
 }
 
@@ -69,15 +65,15 @@ func (malt *Malt) TemperatureOfUse() TemperatureRange {
 	return malt.temperatureOfUse
 }
 
-func (malt *Malt) ExtractFineGrind() float32 {
+func (malt *Malt) ExtractFineGrind() float64 {
 	return malt.extractFineGrind
 }
 
-func (malt *Malt) ExtractCoarseGrind() float32 {
+func (malt *Malt) ExtractCoarseGrind() float64 {
 	return malt.extractCoarseGrind
 }
 
-func (malt *Malt) DiastaticPower() float32 {
+func (malt *Malt) DiastaticPower() float64 {
 	return malt.diastaticPower
 }
 
@@ -85,10 +81,10 @@ func (malt *Malt) ColorSRM() float64 {
 	return malt.colorSRM
 }
 
-func (temperature *TemperatureRange) Min() float32 {
+func (temperature *TemperatureRange) Min() float64 {
 	return temperature.min
 }
 
-func (temperature *TemperatureRange) Max() float32 {
+func (temperature *TemperatureRange) Max() float64 {
 	return temperature.max
 }

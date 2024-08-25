@@ -183,12 +183,12 @@ func executeColorUseCase() error {
 		return estimatorError
 	}
 
-	fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá: \r\n\n"+
-		"COLOR SRM %d - %s \r\n Caracteristicas del color: \r\n %s\r\n",
+	fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá: \r\n"+
+		"COLOR SRM %d - %s \r\n Caracteristicas del color: %s\r\n",
 		colorEstimated.ColorSRM,
 		colorEstimated.ColorDescription,
 		colorEstimated.ColorCharacteristics)
-	fmt.Printf("Segun la cantidad de días de maduración, se estima que la cerveza tendrá %s: \r\n\n",
+	fmt.Printf("Segun la cantidad de días de maduración, se estima que la cerveza tendrá %s \r\n",
 		colorEstimated.ColorIntensityDescription)
 
 	time.Sleep(3 * time.Second)

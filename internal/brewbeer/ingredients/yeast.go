@@ -1,23 +1,19 @@
 package ingredients
 
-import (
-	"eccea/internal/brewbeer/characteristic"
-)
-
 type (
 	Yeast struct {
 		id                    string
-		flavorCharacteristics []characteristic.Flavor
-		smellCharacteristics  []characteristic.Smell
-		colorCharacteristics  []characteristic.Color
+		flavorCharacteristics []Flavor
+		smellCharacteristics  []Smell
+		colorCharacteristics  []Color
 		temperatureOfWork     TemperatureRange
 		timeOfWork            TimeOfWork
 	}
 
 	TimeOfWork struct {
-		min         float32
-		recommended float32
-		max         float32
+		min         float64
+		recommended float64
+		max         float64
 	}
 )
 
@@ -25,15 +21,15 @@ func (yeast *Yeast) ID() string {
 	return yeast.id
 }
 
-func (yeast *Yeast) FlavorCharacteristics() []characteristic.Flavor {
+func (yeast *Yeast) FlavorCharacteristics() []Flavor {
 	return yeast.flavorCharacteristics
 }
 
-func (yeast *Yeast) SmellCharacteristics() []characteristic.Smell {
+func (yeast *Yeast) SmellCharacteristics() []Smell {
 	return yeast.smellCharacteristics
 }
 
-func (yeast *Yeast) ColorCharacteristics() []characteristic.Color {
+func (yeast *Yeast) ColorCharacteristics() []Color {
 	return yeast.colorCharacteristics
 }
 
@@ -45,14 +41,14 @@ func (yeast *Yeast) TimeOfWork() TimeOfWork {
 	return yeast.timeOfWork
 }
 
-func (time *TimeOfWork) Min() float32 {
+func (time *TimeOfWork) Min() float64 {
 	return time.min
 }
 
-func (time *TimeOfWork) Max() float32 {
+func (time *TimeOfWork) Max() float64 {
 	return time.max
 }
 
-func (time *TimeOfWork) Recommended() float32 {
+func (time *TimeOfWork) Recommended() float64 {
 	return time.recommended
 }

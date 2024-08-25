@@ -33,7 +33,7 @@ func (s *service) EstimateIBU(params *Params) (float64, error) {
 // getHop busca el lupudo en la lista de lupulos "hops" cuyo ID corresponda con "idHop"
 func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
 	for _, hop := range hops {
-		if strings.EqualFold(hop.ID(), idHop) {
+		if strings.EqualFold(hop.Name(), idHop) {
 			return &hop
 		}
 	}
