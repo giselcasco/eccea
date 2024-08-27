@@ -23,28 +23,66 @@ type (
 	}
 )
 
+// MaltBuilder constructor de la entidad malta
 func NewMaltBuilder() *MaltBuilder {
 	return &MaltBuilder{
 		malt: &Malt{},
 	}
 }
 
-func (mb *MaltBuilder) NameID(name string) {
+func (mb *MaltBuilder) Name(name string) *MaltBuilder {
 	mb.malt.name = name
+	return mb
 }
 
-func (mb *MaltBuilder) ColorCharacteristics(ccharact []Color) {
+func (mb *MaltBuilder) ColorCharacteristics(ccharact []Color) *MaltBuilder {
 	mb.malt.colorCharacteristics = ccharact
+	return mb
 }
 
-func (mb *MaltBuilder) ColorSRM(color float64) {
+func (mb *MaltBuilder) FlavorCharacteristics(ccharact []Flavor) *MaltBuilder {
+	mb.malt.flavorCharacteristics = ccharact
+	return mb
+}
+
+func (mb *MaltBuilder) SmellCharacteristics(ccharact []Smell) *MaltBuilder {
+	mb.malt.smellCharacteristics = ccharact
+	return mb
+}
+
+func (mb *MaltBuilder) ColorSRM(color float64) *MaltBuilder {
 	mb.malt.colorSRM = color
+	return mb
+}
+
+func (mb *MaltBuilder) DiastaticPower(diastaticPower float64) *MaltBuilder {
+	mb.malt.diastaticPower = diastaticPower
+	return mb
+}
+
+func (mb *MaltBuilder) ExtractCoarseGrind(extractCoarseGrind float64) *MaltBuilder {
+	mb.malt.extractCoarseGrind = extractCoarseGrind
+	return mb
+}
+
+func (mb *MaltBuilder) ExtractFineGrind(extractFineGrind float64) *MaltBuilder {
+	mb.malt.extractFineGrind = extractFineGrind
+	return mb
+}
+
+func (mb *MaltBuilder) TemperatureRange(min, max float64) *MaltBuilder {
+	mb.malt.temperatureOfUse = TemperatureRange{
+		min: min,
+		max: max,
+	}
+	return mb
 }
 
 func (mb *MaltBuilder) Build() *Malt {
 	return mb.malt
 }
 
+// Malt metodos de la entidad de dominio
 func (malt *Malt) Name() string {
 	return malt.name
 }

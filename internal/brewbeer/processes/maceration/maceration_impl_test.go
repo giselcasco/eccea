@@ -13,7 +13,7 @@ import (
 
 func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 	maltBuilder := ingredients.NewMaltBuilder()
-	maltBuilder.NameID("Caramel")
+	maltBuilder.Name("Caramel")
 	maltBuilder.ColorSRM(10)
 	maltBuilder.ColorCharacteristics([]characteristic.Color{{
 		Type:        1,

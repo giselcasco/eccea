@@ -10,51 +10,38 @@ type (
 	// teniendo en cuenta el grado o proporcion en que se encuentre presente el ingrediente.
 	DegreeAdjetives int
 
-	// MouthfeelDescription es la descripcion del retrogusto (sabor en boca) que aporta un ingrediente.
-	MouthfeelDescription string
-
-	// Mouthfeel es la estructura que contiene el adjetivo y descripcion de la caracteristica del sabor en boca
-	Mouthfeel struct {
+	// AfterTaste es la estructura que contiene el adjetivo y descripcion de la caracteristica del sabor en boca
+	AfterTaste struct {
 		Type        TypeAdjetives
-		Description MouthfeelDescription
+		Description string // Description descripcion del retrogusto (sabor en boca) que aporta un ingrediente.
 	}
-
-	// SmellDescription es la descripcion del aroma que aporta un ingrediente.
-	SmellDescription string
 
 	// Smell es la estructura que contiene el adjetivo y descripcion de la caracteristica del aroma
 	Smell struct {
 		Type        TypeAdjetives
-		Description SmellDescription
+		Description string // SmellDescription descripcion del aroma que aporta un ingrediente.
 	}
-
-	// FlavorDescription es la descripcion del sabor que aporta un ingrediente.
-	FlavorDescription string
 
 	// Flavor es la estructura que contiene el adjetivo y descripcion de la caracteristica del sabor
 	Flavor struct {
 		Type        TypeAdjetives
-		Description FlavorDescription
+		Description string // FlavorDescription descripcion del sabor que aporta un ingrediente.
 	}
-
-	// ColorDescription es la descripcion del color que aporta un ingrediente.
-	ColorDescription string
 
 	// Color es la estructura que contiene el adjetivo y descripcion de la caracteristica del color
 	Color struct {
 		Type        TypeAdjetives
-		Description ColorDescription
+		Description string // Description del color que aporta un ingrediente.
 	}
 )
 
 const (
 	// FlavorDescriptions
-	CandyFlavor   FlavorDescription = "caramelo dulce"
-	CaramelFlavor FlavorDescription = "caramelo"
+	CaramelFlavor = "caramelo"
 
 	// ColorDescriptions
-	GoldColor      ColorDescription = "tonalidades doradas"
-	GoldAmberColor ColorDescription = "ambar dorado"
+	GoldColor      = "tonalidades doradas"
+	GoldAmberColor = "ambar dorado"
 
 	space = " "
 )

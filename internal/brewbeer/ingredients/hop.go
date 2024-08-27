@@ -1,14 +1,62 @@
 package ingredients
 
-type Hop struct {
-	name                     string
-	flavorCharacteristics    []Flavor
-	smellCharacteristics     []Smell
-	mouthfeelCharacteristics []Mouthfeel
-	alphaAcids               float64
-	betaAcids                float64
+type (
+	Hop struct {
+		name                      string
+		flavorCharacteristics     []Flavor
+		smellCharacteristics      []Smell
+		afterTasteCharacteristics []AfterTaste
+		alphaAcids                float64
+		betaAcids                 float64
+	}
+
+	HopBuilder struct {
+		hop *Hop
+	}
+)
+
+// HopBuilder metodods del constructor de la entidad
+func NewHopBuilder() *HopBuilder {
+	return &HopBuilder{
+		hop: &Hop{},
+	}
 }
 
+func (hb *HopBuilder) Name(name string) *HopBuilder {
+	hb.hop.name = name
+	return hb
+}
+
+func (hb *HopBuilder) AlphaAcids(alphaAcids float64) *HopBuilder {
+	hb.hop.alphaAcids = alphaAcids
+	return hb
+}
+
+func (hb *HopBuilder) BetaAcids(betaAcids float64) *HopBuilder {
+	hb.hop.betaAcids = betaAcids
+	return hb
+}
+
+func (hb *HopBuilder) FlavorCharacteristics(ccharact []Flavor) *HopBuilder {
+	hb.hop.flavorCharacteristics = ccharact
+	return hb
+}
+
+func (hb *HopBuilder) SmellCharacteristics(ccharact []Smell) *HopBuilder {
+	hb.hop.smellCharacteristics = ccharact
+	return hb
+}
+
+func (hb *HopBuilder) AfterTasteCharacteristics(ccharact []AfterTaste) *HopBuilder {
+	afterTaste = ccharact
+	return hb
+}
+
+func (hb *HopBuilder) Build() *Hop {
+	return hb.hop
+}
+
+// Hop metodos de la entidad de dominio
 func (hop *Hop) Name() string {
 	return hop.name
 }
@@ -33,12 +81,12 @@ func (hop *Hop) SetSmellCharacteristics(smells []Smell) {
 	hop.smellCharacteristics = smells
 }
 
-func (hop *Hop) MouthfeelCharacteristics() []Mouthfeel {
-	return hop.mouthfeelCharacteristics
+func (hop *Hop) AfterTasteCharacteristics() []AfterTaste {
+	return hop.afterTasteCharacteristics
 }
 
-func (hop *Hop) SetMouthfeelCharacteristics(mouthfeel []Mouthfeel) {
-	hop.mouthfeelCharacteristics = mouthfeel
+func (hop *Hop) SetAfterTasteCharacteristics(afterTaste []AfterTaste) {
+	hop.afterTasteCharacteristics = afterTaste
 }
 
 func (hop *Hop) BetaAcids() float64 {

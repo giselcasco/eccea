@@ -1,12 +1,12 @@
 package boiling
 
-import "eccea/internal/brewbeer/characteristic"
+import "eccea/internal/brewbeer/ingredients"
 
 type Results struct {
-	ibu                      float64 // ibu is the international bitterness unit
-	flavorCharacteristics    []characteristic.Flavor
-	smellCharacteristics     []characteristic.Smell
-	mouthfeelCharacteristics []characteristic.Mouthfeel
+	ibu                       float64 // ibu is the international bitterness unit
+	flavorCharacteristics     []ingredients.Flavor
+	smellCharacteristics      []ingredients.Smell
+	afterTasteCharacteristics []ingredients.AfterTaste
 }
 
 func NewResults() *Results {
@@ -21,26 +21,26 @@ func (r *Results) SetIBU(ibu float64) {
 	r.ibu = ibu
 }
 
-func (r *Results) AddFlavorCharacteristic(flavor characteristic.Flavor) {
+func (r *Results) AddFlavorCharacteristic(flavor ingredients.Flavor) {
 	r.flavorCharacteristics = append(r.flavorCharacteristics, flavor)
 }
 
-func (r *Results) AddSmellCharacteristic(smell characteristic.Smell) {
+func (r *Results) AddSmellCharacteristic(smell ingredients.Smell) {
 	r.smellCharacteristics = append(r.smellCharacteristics, smell)
 }
 
-func (r *Results) AddMouthfeelCharacteristic(mouthfeel characteristic.Mouthfeel) {
-	r.mouthfeelCharacteristics = append(r.mouthfeelCharacteristics, mouthfeel)
+func (r *Results) AddAfterTasteCharacteristic(afterTaste ingredients.AfterTaste) {
+	r.afterTasteCharacteristics = append(r.afterTasteCharacteristics, afterTaste)
 }
 
-func (r *Results) FlavorCharacteristic() []characteristic.Flavor {
+func (r *Results) FlavorCharacteristic() []ingredients.Flavor {
 	return r.flavorCharacteristics
 }
 
-func (r *Results) SmellCCharacteristic() []characteristic.Smell {
+func (r *Results) SmellCCharacteristic() []ingredients.Smell {
 	return r.smellCharacteristics
 }
 
-func (r *Results) MouthfeelCharacteristic() []characteristic.Mouthfeel {
-	return r.mouthfeelCharacteristics
+func (r *Results) AfterTasteCharacteristic() []ingredients.AfterTaste {
+	return r.afterTasteCharacteristics
 }

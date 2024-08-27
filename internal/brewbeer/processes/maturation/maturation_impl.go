@@ -10,10 +10,10 @@ func NewService() Service {
 func (s *service) EstimateColor(params *Params) string {
 	var daysCompare = uint64(7)
 	var mapColorIntensity = map[uint64]string{
-		7:   "Alta turbidez, color opaco.",
-		14:  "Disminución de la turbidez, color más claro.",
-		30:  "Alta claridad, color definido.",
-		100: "Máxima pureza y claridad del color.",
+		7:   "alta turbidez y color opaco.",
+		14:  "disminución de la turbidez y color más claro.",
+		30:  "alta claridad y color definido.",
+		100: "máxima pureza y claridad del color.",
 	}
 
 	if params.NumberOfDays > 0 {
