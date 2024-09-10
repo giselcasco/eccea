@@ -2,6 +2,7 @@ package maceration_test
 
 import (
 	"eccea/internal/brewbeer/ingredients"
+	"eccea/internal/brewbeer/ingredients/repositorymocks"
 	"eccea/internal/brewbeer/processes/maceration"
 	"errors"
 	"testing"
@@ -74,7 +75,7 @@ func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 
 	for _, data := range dataSet {
 		t.Run(data.nameTest, func(t *testing.T) {
-			repo := 
+			repo := repositorymocks.NewRepositoryMock(t)
 			macerationProcess := maceration.NewService(repo)
 			if data.params != nil && len(data.params.MaltAdditions) > 0 {
 				repo.

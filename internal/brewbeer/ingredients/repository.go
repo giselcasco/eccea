@@ -44,7 +44,7 @@ type (
 	}
 )
 
-//go:generate mockery --name=Repository --structname=RepositoryMock --case underscore --output repositorymocks  --outpkg repositorymocks
+//go:generate mockery --name=Repository --structname=RepositoryMock --output repositorymocks  --outpkg repositorymocks
 type Reader interface {
 	GetMaltByName(maltName string) (*Malt, error)
 	GetHopByName(hopName string) (*Hop, error)

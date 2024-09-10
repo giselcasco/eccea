@@ -40,7 +40,7 @@ func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 
 	for _, data := range dataSet {
 		t.Run(data.nameTest, func(t *testing.T) {
-			repo := &repositorymocks.RepositoryMock{}
+			repo := repositorymocks.NewRepositoryMock(t)
 			boiling := boiling.NewService(repo)
 
 			response, err := boiling.EstimateIBU(data.params)
