@@ -1,5 +1,5 @@
 package flavor
 
 type Flavor interface {
-	Estimate(params Params) (Estimation, error)
+	Estimate(params Params) (*Estimation, error)
 }

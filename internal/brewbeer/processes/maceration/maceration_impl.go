@@ -1,7 +1,6 @@
 package maceration
 
 import (
-	"eccea/internal/brewbeer/characteristic"
 	"eccea/internal/brewbeer/ingredients"
 	"errors"
 	"math"
@@ -9,19 +8,19 @@ import (
 
 type (
 	service struct {
-		repo ingredients.Repository
+		repo ingredients.Reader
 	}
 
 	MaltParam struct {
 		NameID               string
 		Quantity             float64
 		Proportion           float64
-		ColorCharacteristics []characteristic.Color
+		ColorCharacteristics []ingredients.Color
 		ColorSRM             float64
 	}
 )
 
-func NewService(repo ingredients.Repository) Service {
+func NewService(repo ingredients.Reader) Service {
 	return &service{
 		repo: repo,
 	}
@@ -48,7 +47,7 @@ func (s *service) getMalts(malts []Malt, totalQuantity float64) ([]MaltParam, er
 	)
 
 	for _, m := range malts {
-		malt, err := s.repo.GetMalt(m.NameID)
+		malt, err := s.repo.GetMaltByName(m.NameID)
 		if err != nil {
 			return nil, err
 		}

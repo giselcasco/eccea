@@ -1,9 +1,7 @@
 package maceration_test
 
 import (
-	"eccea/internal/brewbeer/characteristic"
 	"eccea/internal/brewbeer/ingredients"
-	"eccea/internal/brewbeer/ingredients/repositorymocks"
 	"eccea/internal/brewbeer/processes/maceration"
 	"errors"
 	"testing"
@@ -15,9 +13,9 @@ func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 	maltBuilder := ingredients.NewMaltBuilder()
 	maltBuilder.Name("Caramel")
 	maltBuilder.ColorSRM(10)
-	maltBuilder.ColorCharacteristics([]characteristic.Color{{
+	maltBuilder.ColorCharacteristics([]ingredients.Color{{
 		Type:        1,
-		Description: characteristic.GoldColor,
+		Description: ingredients.GoldColor,
 	}})
 
 	colorResults := &maceration.ColorResults{}
@@ -76,7 +74,7 @@ func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 
 	for _, data := range dataSet {
 		t.Run(data.nameTest, func(t *testing.T) {
-			repo := &repositorymocks.RepositoryMock{}
+			repo := 
 			macerationProcess := maceration.NewService(repo)
 			if data.params != nil && len(data.params.MaltAdditions) > 0 {
 				repo.

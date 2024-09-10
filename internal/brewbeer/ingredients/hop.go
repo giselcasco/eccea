@@ -48,7 +48,7 @@ func (hb *HopBuilder) SmellCharacteristics(ccharact []Smell) *HopBuilder {
 }
 
 func (hb *HopBuilder) AfterTasteCharacteristics(ccharact []AfterTaste) *HopBuilder {
-	afterTaste = ccharact
+	hb.hop.afterTasteCharacteristics = ccharact
 	return hb
 }
 

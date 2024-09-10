@@ -8,10 +8,10 @@ import (
 
 // service es el implementador de los metodos de proceso de coccion
 type service struct {
-	repo ingredients.Repository
+	repo ingredients.Reader
 }
 
-func NewService(repo ingredients.Repository) Service {
+func NewService(repo ingredients.Reader) Service {
 	return &service{
 		repo: repo,
 	}
@@ -31,6 +31,7 @@ func (s *service) EstimateIBU(params *Params) (float64, error) {
 }
 
 // getHop busca el lupudo en la lista de lupulos "hops" cuyo ID corresponda con "idHop"
+// opcional para busqueda en db del alphaAcids del hop
 func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
 	for _, hop := range hops {
 		if strings.EqualFold(hop.Name(), idHop) {

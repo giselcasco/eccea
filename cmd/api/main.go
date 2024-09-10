@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"eccea/internal/brewbeer/estimators/abv"
 	"eccea/internal/brewbeer/estimators/color"
+	"eccea/internal/brewbeer/estimators/flavor"
 	"eccea/internal/brewbeer/estimators/ibu"
+	"eccea/internal/brewbeer/ingredients"
 	"eccea/internal/brewbeer/processes/boiling"
 	"eccea/internal/brewbeer/processes/fermentation"
 	"eccea/internal/brewbeer/processes/maceration"
 	"eccea/internal/brewbeer/processes/maturation"
-	"eccea/internal/repository"
 	"fmt"
 	"os"
 	"strconv"
@@ -79,11 +80,11 @@ var exeOptions = map[int64]executor{
 	5: executeIBUUseCase,
 	4: executeABVUseCase,
 	3: executeColorUseCase,
+	2: executeFlavorUseCase,
 }
 
 /*
-	executeIBUUseCase es responsable de calcular el IBU,
-
+executeIBUUseCase es responsable de calcular el IBU,
 para ello consulta al usuario los valores que necesita y
 carga los servicios y repositorio necesarios para el procesamiento,
 entre ellos el servicio de estimacion de IBU,
@@ -91,7 +92,7 @@ el servicio del proceso de cocción
 y el repositorio de ingredientes
 */
 func executeIBUUseCase() error {
-	repository := repository.NewIngredientsRepository()
+	repository := ingredients.NewSqliteReader()
 	boilingService := boiling.NewService(repository)
 	estimator := ibu.NewIBUImpl(boilingService)
 
@@ -116,8 +117,7 @@ func executeIBUUseCase() error {
 }
 
 /*
-	executeABVUseCase es responsable de calcular el volumen de alcohol en la cerveza,
-
+executeABVUseCase es responsable de calcular el volumen de alcohol en la cerveza,
 para ello consulta al usuario los valores que necesita y
 carga los servicios necesarios para dicho calculo,
 entre ellos el servicio de estimacion de ABV y
@@ -148,8 +148,7 @@ func executeABVUseCase() error {
 }
 
 /*
-	executeColorUseCase es responsable de calcular
-
+executeColorUseCase es responsable de calcular
 el valor del color resultante y las caracteristicas del color asociadas,
 para ello consulta al usuario los valores que necesita y
 carga los servicios y repositorio necesarios para el procesamiento,
@@ -159,7 +158,7 @@ el servicio del proceso de maduración
 y el repositorio de ingredientes
 */
 func executeColorUseCase() error {
-	repository := repository.NewIngredientsRepository()
+	repository := ingredients.NewSqliteReader()
 	macerationService := maceration.NewService(repository)
 	maturationService := maturation.NewService()
 	estimator := color.NewColorImpl(macerationService, maturationService)
@@ -193,7 +192,59 @@ func executeColorUseCase() error {
 
 	time.Sleep(3 * time.Second)
 	return nil
+}
 
+/*
+executeFlavorUseCase es responsable de estimar las caracteristicas del sabor
+asociadas a las maltas y lúpulos que intervienen en la elaboración,
+para ello consulta al usuario los valores que necesita y
+carga los servicios y repositorio necesarios para el procesamiento,
+entre ellos el servicio de estimacion de sabor,
+el servicio del proceso de maceración,
+el servicio del proceso de cocción,
+el servicio del proceso de maduración
+y el repositorio de ingredientes
+*/
+func executeFlavorUseCase() error {
+	repository := ingredients.NewSqliteReader()
+	macerationService := maceration.NewService(repository)
+	boilingService := boiling.NewService(repository)
+	maturationService := maturation.NewService()
+	estimator := flavor.NewFlavorImpl(macerationService, boilingService, maturationService)
+
+	macerationParams, err := askForMacerationParams()
+	if err != nil {
+		fmt.Println(buildParamsError)
+		return err
+	}
+
+	boilingParams, err := askForBoilingParams()
+	if err != nil {
+		fmt.Println(buildParamsError)
+		return err
+	}
+
+	maturationParams, err := askForMaturationParams()
+	if err != nil {
+		fmt.Println(buildParamsError)
+		return err
+	}
+	flavorParams := flavor.Params{
+		Maceration: *macerationParams,
+		Boiling:    *boilingParams,
+		Maturation: *maturationParams,
+	}
+	flavorEstimated, estimatorError := estimator.Estimate(flavorParams)
+	if estimatorError != nil || flavorEstimated == nil {
+		fmt.Printf("No fue posible estimar las caracteristicas del sabor con los valores suministrados\r\n")
+		time.Sleep(2 * time.Second)
+		return estimatorError
+	}
+
+	// TODO presentar resultados
+
+	time.Sleep(3 * time.Second)
+	return nil
 }
 
 /*

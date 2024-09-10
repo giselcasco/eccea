@@ -1,12 +1,12 @@
 package fermentation
 
-import "eccea/internal/brewbeer/characteristic"
+import "eccea/internal/brewbeer/ingredients"
 
 type Results struct {
 	abv                   float64 // abv alcohol by volume of beer
-	flavorCharacteristics []characteristic.Flavor
-	smellCharacteristics  []characteristic.Smell
-	colorCharacteristics  []characteristic.Color
+	flavorCharacteristics []ingredients.Flavor
+	smellCharacteristics  []ingredients.Smell
+	colorCharacteristics  []ingredients.Color
 }
 
 func NewResults() *Results {
@@ -21,26 +21,26 @@ func (r *Results) SetABV(alcoholByVolume float64) {
 	r.abv = alcoholByVolume
 }
 
-func (r *Results) AddFlavorCharacteristic(flavor characteristic.Flavor) {
+func (r *Results) AddFlavorCharacteristic(flavor ingredients.Flavor) {
 	r.flavorCharacteristics = append(r.flavorCharacteristics, flavor)
 }
 
-func (r *Results) AddSmellCharacteristic(smell characteristic.Smell) {
+func (r *Results) AddSmellCharacteristic(smell ingredients.Smell) {
 	r.smellCharacteristics = append(r.smellCharacteristics, smell)
 }
 
-func (r *Results) AddColorCharacteristic(color characteristic.Color) {
+func (r *Results) AddColorCharacteristic(color ingredients.Color) {
 	r.colorCharacteristics = append(r.colorCharacteristics, color)
 }
 
-func (r *Results) FlavorCharacteristic() []characteristic.Flavor {
+func (r *Results) FlavorCharacteristic() []ingredients.Flavor {
 	return r.flavorCharacteristics
 }
 
-func (r *Results) SmellCCharacteristic() []characteristic.Smell {
+func (r *Results) SmellCCharacteristic() []ingredients.Smell {
 	return r.smellCharacteristics
 }
 
-func (r *Results) ColorCharacteristic() []characteristic.Color {
+func (r *Results) ColorCharacteristic() []ingredients.Color {
 	return r.colorCharacteristics
 }
