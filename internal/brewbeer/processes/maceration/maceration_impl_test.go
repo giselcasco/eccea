@@ -14,10 +14,13 @@ func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 	maltBuilder := ingredients.NewMaltBuilder()
 	maltBuilder.Name("Caramel")
 	maltBuilder.ColorSRM(10)
-	maltBuilder.ColorCharacteristics([]ingredients.Color{{
-		Type:        1,
-		Description: ingredients.GoldColor,
-	}})
+	maltBuilder.Characteristics([]ingredients.Characteristic{
+		{
+			CharacteristicType: "color",
+			TypeAdjetives:      1,
+			Description:        ingredients.GoldColor,
+		},
+	})
 
 	colorResults := &maceration.ColorResults{}
 	colorResults.SetColor(1)

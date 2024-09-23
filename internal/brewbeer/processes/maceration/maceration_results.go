@@ -13,6 +13,11 @@ type (
 		colorDescription     string
 		colorCharacteristics string
 	}
+
+	FlavorResults struct {
+		flavorCharacteristics string
+		smellCharacteristics  string
+	}
 )
 
 func NewResults() *Results {
@@ -55,26 +60,46 @@ func NewColorResults() *ColorResults {
 	return &ColorResults{}
 }
 
-func (r *ColorResults) Color() uint64 {
-	return r.colorSRM
+func (c *ColorResults) Color() uint64 {
+	return c.colorSRM
 }
 
-func (r *ColorResults) SetColor(color uint64) {
-	r.colorSRM = color
+func (c *ColorResults) SetColor(color uint64) {
+	c.colorSRM = color
 }
 
-func (r *ColorResults) ColorDescription() string {
-	return r.colorDescription
+func (c *ColorResults) ColorDescription() string {
+	return c.colorDescription
 }
 
-func (r *ColorResults) SetColorDescription(colorDes string) {
-	r.colorDescription = colorDes
+func (c *ColorResults) SetColorDescription(colorDes string) {
+	c.colorDescription = colorDes
 }
 
-func (r *ColorResults) ColorCharacteristic() string {
-	return r.colorCharacteristics
+func (c *ColorResults) ColorCharacteristic() string {
+	return c.colorCharacteristics
 }
 
-func (r *ColorResults) SetColorCharacteristic(colorCharacteristic string) {
-	r.colorCharacteristics = colorCharacteristic
+func (c *ColorResults) SetColorCharacteristic(colorCharacteristic string) {
+	c.colorCharacteristics = colorCharacteristic
+}
+
+func NewFlavorResults() *FlavorResults {
+	return &FlavorResults{}
+}
+
+func (f *FlavorResults) SetFlavorCharacteristic(flavorCharacteristic string) {
+	f.flavorCharacteristics = flavorCharacteristic
+}
+
+func (f *FlavorResults) SetSmellCharacteristic(smellCharacteristics string) {
+	f.smellCharacteristics = smellCharacteristics
+}
+
+func (f *FlavorResults) FlavorCharacteristic() string {
+	return f.flavorCharacteristics
+}
+
+func (f *FlavorResults) SmellCharacteristic() string {
+	return f.smellCharacteristics
 }

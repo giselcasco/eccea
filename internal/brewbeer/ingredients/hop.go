@@ -2,12 +2,10 @@ package ingredients
 
 type (
 	Hop struct {
-		name                      string
-		flavorCharacteristics     []Flavor
-		smellCharacteristics      []Smell
-		afterTasteCharacteristics []AfterTaste
-		alphaAcids                float64
-		betaAcids                 float64
+		name            string
+		characteristics []Characteristic
+		alphaAcids      float64
+		betaAcids       float64
 	}
 
 	HopBuilder struct {
@@ -37,18 +35,8 @@ func (hb *HopBuilder) BetaAcids(betaAcids float64) *HopBuilder {
 	return hb
 }
 
-func (hb *HopBuilder) FlavorCharacteristics(ccharact []Flavor) *HopBuilder {
-	hb.hop.flavorCharacteristics = ccharact
-	return hb
-}
-
-func (hb *HopBuilder) SmellCharacteristics(ccharact []Smell) *HopBuilder {
-	hb.hop.smellCharacteristics = ccharact
-	return hb
-}
-
-func (hb *HopBuilder) AfterTasteCharacteristics(ccharact []AfterTaste) *HopBuilder {
-	hb.hop.afterTasteCharacteristics = ccharact
+func (hb *HopBuilder) Characteristics(ccharact []Characteristic) *HopBuilder {
+	hb.hop.characteristics = ccharact
 	return hb
 }
 
@@ -65,28 +53,12 @@ func (hop *Hop) SetID(name string) {
 	hop.name = name
 }
 
-func (hop *Hop) FlavorCharacteristics() []Flavor {
-	return hop.flavorCharacteristics
+func (hop *Hop) Characteristics() []Characteristic {
+	return hop.characteristics
 }
 
-func (hop *Hop) SetFlavorCharacteristics(flavors []Flavor) {
-	hop.flavorCharacteristics = flavors
-}
-
-func (hop *Hop) SmellCharacteristics() []Smell {
-	return hop.smellCharacteristics
-}
-
-func (hop *Hop) SetSmellCharacteristics(smells []Smell) {
-	hop.smellCharacteristics = smells
-}
-
-func (hop *Hop) AfterTasteCharacteristics() []AfterTaste {
-	return hop.afterTasteCharacteristics
-}
-
-func (hop *Hop) SetAfterTasteCharacteristics(afterTaste []AfterTaste) {
-	hop.afterTasteCharacteristics = afterTaste
+func (hop *Hop) SetCharacteristics(ccharact []Characteristic) {
+	hop.characteristics = ccharact
 }
 
 func (hop *Hop) BetaAcids() float64 {

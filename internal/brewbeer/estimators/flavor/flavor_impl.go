@@ -25,5 +25,17 @@ func NewFlavorImpl(macerationServ maceration.Service,
 
 // Estimate es la implementación para la estimación de caracteristicas del sabor
 func (c *flavorImpl) Estimate(params Params) (*Estimation, error) {
-	return nil, nil
+	macerationResults, macarationErr := c.macerationService.EstimateFlavor(&params.Maceration)
+	if macarationErr != nil {
+		return nil, macarationErr
+	}
+	boilingResults, boilingErr := c.boilingService.EstimateIBU(&params.Boiling)
+	if boilingErr != nil {
+		return nil, boilingErr
+	}
+	// TODO get characterists AfterTasteChar
+	return NewEstimation(
+		macerationResults.FlavorCharacteristic(),
+		macerationResults.SmellCharacteristic(),
+		macerationResults.SmellCharacteristic()), nil
 }

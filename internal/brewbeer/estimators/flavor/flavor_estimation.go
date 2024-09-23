@@ -1,17 +1,15 @@
 package flavor
 
-import "eccea/internal/brewbeer/ingredients"
-
 type Estimation struct {
-	FlavorCharacteristics     []ingredients.Flavor
-	SmellCharacteristics      []ingredients.Smell
-	AfterTasteCharacteristics []ingredients.AfterTaste
+	FlavorCharacteristics     string
+	SmellCharacteristics      string
+	AfterTasteCharacteristics string
 }
 
-func NewEstimation(flavorCharacteristics []ingredients.Flavor,
-	smellCharacteristics []ingredients.Smell,
-	afterTasteCharacteristics []ingredients.AfterTaste) Estimation {
-	return Estimation{
+func NewEstimation(flavorCharacteristics string,
+	smellCharacteristics string,
+	afterTasteCharacteristics string) *Estimation {
+	return &Estimation{
 		FlavorCharacteristics:     flavorCharacteristics,
 		SmellCharacteristics:      smellCharacteristics,
 		AfterTasteCharacteristics: afterTasteCharacteristics,

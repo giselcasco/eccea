@@ -1,37 +1,12 @@
 package ingredients
 
 type (
-	// TypeAdjetives hace referencia al indice del mapa que contine
-	// las listas de adjetivos que mejor acompañan a la descripcion del ingrediente.
-	TypeAdjetives int
-
-	// DegreeAdjetives hace referencia al indice de la lista de adjetivos
-	// y se usa para identificar el adjetivo que mejor acompañana a una descripcion
-	// teniendo en cuenta el grado o proporcion en que se encuentre presente el ingrediente.
-	DegreeAdjetives int
-
-	// AfterTaste es la estructura que contiene el adjetivo y descripcion de la caracteristica del sabor en boca
-	AfterTaste struct {
-		Type        TypeAdjetives
-		Description string // Description descripcion del retrogusto (sabor en boca) que aporta un ingrediente.
-	}
-
-	// Smell es la estructura que contiene el adjetivo y descripcion de la caracteristica del aroma
-	Smell struct {
-		Type        TypeAdjetives
-		Description string // SmellDescription descripcion del aroma que aporta un ingrediente.
-	}
-
-	// Flavor es la estructura que contiene el adjetivo y descripcion de la caracteristica del sabor
-	Flavor struct {
-		Type        TypeAdjetives
-		Description string // FlavorDescription descripcion del sabor que aporta un ingrediente.
-	}
-
-	// Color es la estructura que contiene el adjetivo y descripcion de la caracteristica del color
-	Color struct {
-		Type        TypeAdjetives
-		Description string // Description del color que aporta un ingrediente.
+	// Characteristic es la estructura que contiene el adjetivo y descripcion de la caracteristica del sabor en boca
+	Characteristic struct {
+		CharacteristicType string  // CharacteristicType hace referencia al tipo de caracteristica, estas pueden ser "aroma", "sabor", "color", "retrogusto", etc.
+		TypeAdjetives      int     // TypeAdjetives referencia al indice del mapa que contine los adjetivos que mejor acompañan a la descripcion del ingrediente.
+		Description        string  // Description descripcion de la caracteristica que aporta un ingrediente.
+		Contribution       float64 // grado en que contribuye la caracteristica en el ingrediente
 	}
 )
 
@@ -43,26 +18,39 @@ const (
 	GoldColor      = "tonalidades doradas"
 	GoldAmberColor = "ambar dorado"
 
+	maxContribution = 5
+
 	space = " "
 )
 
-var mapTypeAdjetives = map[TypeAdjetives][]string{
+var mapTypeAdjetives = map[int][]string{
 	1: {"sutiles", "suaves", "marcadas", "intensas"},
 	2: {"sutil", "suave", "definido", "intenso"},
+	3: {"sutil", "suave", "definida", "intensa"},
+	4: {"sutiles", "suaves", "marcados", "intensos"},
 }
 
-// GetDescriptionColor devuelve la descripcion del color teniendo en cuenta
+// GetDescriptionByProportion devuelve la descripcion de la caracteristica teniendo en cuenta
 // el grado en que dicha descripcion puede cumplirse
-func (c *Color) GetDescriptionColor(proportion float64) string {
-	if adjetives, ok := mapTypeAdjetives[c.Type]; ok && len(adjetives) > 0 {
+func (c *Characteristic) GetDescriptionByProportion(proportion float64) string {
+	contributionPercentage := getContributionPercentage(c.Contribution, proportion)
+	if adjetives, ok := mapTypeAdjetives[c.TypeAdjetives]; ok && len(adjetives) > 0 {
 		partitionBase := 100 / len(adjetives)
 		degree := partitionBase
 		for _, adjetive := range adjetives {
-			if proportion <= float64(degree) {
+			if contributionPercentage <= float64(degree) {
 				return adjetive + space + string(c.Description)
 			}
 			degree += partitionBase
 		}
 	}
 	return space + string(c.Description)
+}
+
+func getContributionPercentage(contribution, proportion float64) float64 {
+	if contribution == maxContribution {
+		return proportion
+	}
+
+	return (contribution / maxContribution) * proportion
 }

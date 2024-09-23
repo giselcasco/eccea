@@ -30,6 +30,18 @@ func (s *service) EstimateIBU(params *Params) (float64, error) {
 	return ibu, nil
 }
 
+/*
+EstimateIBU es el metodo que calcula el ibu a partir de los valores en los parametros
+ingresados por el usuario.
+*/
+func (s *service) EstimateFlavor(params *Params) (*FlavorResults, error) {
+	// TODO cargar perfil sensorial y
+	// calcular porcentaje de contr¡bucion para aroma, amargor y aroma
+	// y segun eso armar definición del aporte de cada lupulo
+
+	return nil, nil
+}
+
 // getHop busca el lupudo en la lista de lupulos "hops" cuyo ID corresponda con "idHop"
 // opcional para busqueda en db del alphaAcids del hop
 func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {

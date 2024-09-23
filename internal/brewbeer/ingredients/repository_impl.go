@@ -5,6 +5,8 @@ import (
 	"sync"
 
 	_ "github.com/mattn/go-sqlite3"
+
+	"eccea/internal/brewbeer/ingredients/dto"
 )
 
 var dbInstance *sql.DB
@@ -50,7 +52,7 @@ func (s *sqliteReader) GetMaltByName(maltName string) (*Malt, error) {
 		return nil, nil
 	}
 
-	item := MaltResponse{}
+	item := dto.MaltResponse{}
 	err = cursorMalt.Scan(
 		&item.ID,
 		&item.Name,
@@ -88,7 +90,7 @@ func (s *sqliteReader) GetHopByName(hopName string) (*Hop, error) {
 		return nil, nil
 	}
 
-	item := HopResponse{}
+	item := dto.HopResponse{}
 	err = cursorHop.Scan(
 		&item.ID,
 		&item.Name,
@@ -122,7 +124,7 @@ func (s *sqliteReader) GetYeastByName(yeastName string) (*Yeast, error) {
 		return nil, nil
 	}
 
-	item := YeastResponse{}
+	item := dto.YeastResponse{}
 	err = cursorYeast.Scan(
 		&item.ID,
 		&item.Name,
@@ -138,8 +140,8 @@ func (s *sqliteReader) GetYeastByName(yeastName string) (*Yeast, error) {
 	return item.ToDomain(), nil
 }
 
-func (s *sqliteReader) getCharacteristics(dbConn *sql.DB, ingredientID string) ([]CharacteristicResponse, error) {
-	queryCharact := `SELECT c.description, c.adjetive_id, ic.type 
+func (s *sqliteReader) getCharacteristics(dbConn *sql.DB, ingredientID string) ([]dto.CharacteristicResponse, error) {
+	queryCharact := `SELECT c.description, c.adjetive_id, ic.type, ic.contribution 
 	FROM characteristic c
 	INNER JOIN  ingredient_characteristic ic ON c.id  =  ic.characteristic_id  
 	WHERE ic.ingredient_id = ?`
@@ -155,14 +157,15 @@ func (s *sqliteReader) getCharacteristics(dbConn *sql.DB, ingredientID string) (
 		return nil, nil
 	}
 
-	charactList := []CharacteristicResponse{}
-	charactItem := CharacteristicResponse{}
+	charactList := []dto.CharacteristicResponse{}
+	charactItem := dto.CharacteristicResponse{}
 	for cursorCharact.Next() {
 		err = cursorCharact.Scan(
 			&charactItem.ID,
 			&charactItem.Description,
 			&charactItem.AdjetiveID,
-			&charactItem.Types)
+			&charactItem.Type,
+			&charactItem.Contribution)
 		if err != nil {
 			return nil, err
 		}

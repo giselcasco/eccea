@@ -2,15 +2,13 @@ package ingredients
 
 type (
 	Malt struct {
-		name                  string
-		flavorCharacteristics []Flavor
-		smellCharacteristics  []Smell
-		colorCharacteristics  []Color
-		colorSRM              float64
-		temperatureOfUse      TemperatureRange
-		extractFineGrind      float64
-		extractCoarseGrind    float64
-		diastaticPower        float64
+		name               string
+		characteristics    []Characteristic
+		colorSRM           float64
+		temperatureOfUse   TemperatureRange
+		extractFineGrind   float64
+		extractCoarseGrind float64
+		diastaticPower     float64
 	}
 
 	TemperatureRange struct {
@@ -35,18 +33,8 @@ func (mb *MaltBuilder) Name(name string) *MaltBuilder {
 	return mb
 }
 
-func (mb *MaltBuilder) ColorCharacteristics(ccharact []Color) *MaltBuilder {
-	mb.malt.colorCharacteristics = ccharact
-	return mb
-}
-
-func (mb *MaltBuilder) FlavorCharacteristics(ccharact []Flavor) *MaltBuilder {
-	mb.malt.flavorCharacteristics = ccharact
-	return mb
-}
-
-func (mb *MaltBuilder) SmellCharacteristics(ccharact []Smell) *MaltBuilder {
-	mb.malt.smellCharacteristics = ccharact
+func (mb *MaltBuilder) Characteristics(ccharact []Characteristic) *MaltBuilder {
+	mb.malt.characteristics = ccharact
 	return mb
 }
 
@@ -87,16 +75,8 @@ func (malt *Malt) Name() string {
 	return malt.name
 }
 
-func (malt *Malt) FlavorCharacteristics() []Flavor {
-	return malt.flavorCharacteristics
-}
-
-func (malt *Malt) SmellCharacteristics() []Smell {
-	return malt.smellCharacteristics
-}
-
-func (malt *Malt) ColorCharacteristics() []Color {
-	return malt.colorCharacteristics
+func (malt *Malt) Characteristics() []Characteristic {
+	return malt.characteristics
 }
 
 func (malt *Malt) TemperatureOfUse() TemperatureRange {
