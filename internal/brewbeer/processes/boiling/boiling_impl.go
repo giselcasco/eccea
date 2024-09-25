@@ -36,7 +36,7 @@ ingresados por el usuario.
 func (s *service) EstimateIBU(params *Params) (float64, error) {
 	var ibu float64
 	for _, hopAddition := range params.HopAdditions {
-		ibu += calculateIBU(params, hopAddition)
+		ibu += s.calculateIBU(params, hopAddition)
 	}
 
 	return ibu, nil
@@ -74,12 +74,13 @@ func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
 func (s *service) getHops(hops []Hop) ([]HopParams, error) {
 	var (
 		totalQuantity float64
-		maltParams    []HopParams
+		hopParams     []HopParams
 	)
 
 	for _, h := range hops {
 		totalQuantity += h.Quantity
 	}
+
 	for _, h := range hops {
 		hop, err := s.repo.GetHopByName(h.NameID)
 		if err != nil {
@@ -87,23 +88,53 @@ func (s *service) getHops(hops []Hop) ([]HopParams, error) {
 		}
 
 		hopProportion := (totalQuantity * 100) / h.Quantity
-		maltParam := HopParams{
+		charactsWithRealContribution := s.getCharactsWithRealContribution(
+			hop.Characteristics(),
+			hopProportion,
+			h.TimeOfWork)
+		hopParam := HopParams{
 			NameID:          h.NameID,
-			Characteristics: hop.Characteristics(),
+			Characteristics: charactsWithRealContribution,
 			AlphaAcids:      hop.AlphaAcids(),
 			Proportion:      hopProportion,
 			Quantity:        h.Quantity,
 		}
-		maltParams = append(maltParams, maltParam)
+		hopParams = append(hopParams, hopParam)
 	}
-	return maltParams, nil
+	return hopParams, nil
+}
+
+func (s *service) getCharactsWithRealContribution(characts []ingredients.Characteristic, proportion float64, timeOfWork uint64) []ingredients.Characteristic {
+	var characteristics []ingredients.Characteristic
+	charactType := s.loadContributionTypeByTimeOfWork(timeOfWork)
+	for _, charact := range characts {
+		if strings.EqualFold(charact.CharacteristicType, charactType) {
+			characteristics = append(characteristics, charact)
+		}
+	}
+	return characteristics
+}
+
+func (s *service) loadContributionTypeByTimeOfWork(timeOfWork uint64) string {
+	var (
+		arrayTimesOfWork        = []uint64{7, 25, 90}
+		arrayCharacteristicType = []string{"aroma", "sabor", "amargor"}
+	)
+
+	for i, tm := range arrayTimesOfWork {
+		if tm >= timeOfWork {
+			return arrayCharacteristicType[i]
+		}
+	}
+
+	return ""
 }
 
 // calculateIBU implementa la formula de calculo del IBU de Glenn Tinseth
-func calculateIBU(params *Params, addition Hop) float64 {
-	firstFactor := greatnessFactor(params.InitialDensity)
-	secondFactor := boilingTimeFactor(addition.TimeOfWork)
-	thirdFactor := proportionOfAlphaAcidUsed(addition.AlphaAcids, addition.Quantity)
+func (s *service) calculateIBU(params *Params, addition Hop) float64 {
+	firstFactor := s.greatnessFactor(params.InitialDensity)
+	secondFactor := s.boilingTimeFactor(addition.TimeOfWork)
+	thirdFactor := s.proportionOfAlphaAcidUsed(addition.AlphaAcids, addition.Quantity)
 	divisor := float64(params.WortAmount) * 4.15
 
 	if divisor > 0 {
@@ -112,7 +143,7 @@ func calculateIBU(params *Params, addition Hop) float64 {
 	return 0
 }
 
-func greatnessFactor(initialDensity float64) float64 {
+func (s *service) greatnessFactor(initialDensity float64) float64 {
 	if initialDensity <= 0 {
 		return 0
 	}
@@ -124,7 +155,7 @@ func greatnessFactor(initialDensity float64) float64 {
 	return firstFactor * secondFactor
 }
 
-func boilingTimeFactor(timeOfWork uint64) float64 {
+func (s *service) boilingTimeFactor(timeOfWork uint64) float64 {
 	exponent := -0.04 * float64(timeOfWork)
 	eRaisedExp := math.Exp(exponent)
 	dividend := 1 - eRaisedExp
@@ -132,6 +163,6 @@ func boilingTimeFactor(timeOfWork uint64) float64 {
 	return dividend
 }
 
-func proportionOfAlphaAcidUsed(alphaAcids float64, quantity float64) float64 {
+func (s *service) proportionOfAlphaAcidUsed(alphaAcids float64, quantity float64) float64 {
 	return (alphaAcids / 100.0) * quantity * 1000
 }

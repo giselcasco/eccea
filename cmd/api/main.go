@@ -6,11 +6,11 @@ import (
 	"eccea/internal/brewbeer/estimators/color"
 	"eccea/internal/brewbeer/estimators/flavor"
 	"eccea/internal/brewbeer/estimators/ibu"
-	"eccea/internal/brewbeer/ingredients"
 	"eccea/internal/brewbeer/processes/boiling"
 	"eccea/internal/brewbeer/processes/fermentation"
 	"eccea/internal/brewbeer/processes/maceration"
 	"eccea/internal/brewbeer/processes/maturation"
+	"eccea/internal/repository"
 	"fmt"
 	"os"
 	"strconv"
@@ -92,7 +92,7 @@ el servicio del proceso de cocción
 y el repositorio de ingredientes
 */
 func executeIBUUseCase() error {
-	repository := ingredients.NewSqliteReader()
+	repository := repository.NewSqliteReader()
 	boilingService := boiling.NewService(repository)
 	estimator := ibu.NewIBUImpl(boilingService)
 
@@ -158,7 +158,7 @@ el servicio del proceso de maduración
 y el repositorio de ingredientes
 */
 func executeColorUseCase() error {
-	repository := ingredients.NewSqliteReader()
+	repository := repository.NewSqliteReader()
 	macerationService := maceration.NewService(repository)
 	maturationService := maturation.NewService()
 	estimator := color.NewColorImpl(macerationService, maturationService)
@@ -206,7 +206,7 @@ el servicio del proceso de maduración
 y el repositorio de ingredientes
 */
 func executeFlavorUseCase() error {
-	repository := ingredients.NewSqliteReader()
+	repository := repository.NewSqliteReader()
 	macerationService := maceration.NewService(repository)
 	boilingService := boiling.NewService(repository)
 	maturationService := maturation.NewService()
