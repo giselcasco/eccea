@@ -28,10 +28,26 @@ func (r *Results) SetIBU(ibu float64) {
 	r.ibu = ibu
 }
 
-func (r *Results) AddCharacteristic(ccharact ingredients.Characteristic) {
-	r.characteristics = append(r.characteristics, ccharact)
+func (f *FlavorResults) SetFlavorCharacteristic(flavor string) {
+	f.flavorCharacteristics = flavor
 }
 
-func (r *Results) Characteristic() []ingredients.Characteristic {
-	return r.characteristics
+func (f *FlavorResults) SetSmellCharacteristic(smell string) {
+	f.smellCharacteristics = smell
+}
+
+func (f *FlavorResults) SetAfterTasteCharacteristic(afterTaste string) {
+	f.afterTasteCharacteristics = afterTaste
+}
+
+func (f *FlavorResults) FlavorCharacteristic() string {
+	return f.flavorCharacteristics
+}
+
+func (f *FlavorResults) SmellCCharacteristic() string {
+	return f.smellCharacteristics
+}
+
+func (f *FlavorResults) AfterTasteCharacteristic() string {
+	return f.afterTasteCharacteristics
 }

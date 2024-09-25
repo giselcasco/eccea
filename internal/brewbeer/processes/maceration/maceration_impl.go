@@ -2,6 +2,7 @@ package maceration
 
 import (
 	"eccea/internal/brewbeer/ingredients"
+	"eccea/internal/repository"
 	"errors"
 	"math"
 	"strings"
@@ -9,7 +10,7 @@ import (
 
 type (
 	service struct {
-		repo ingredients.Reader
+		repo repository.Reader
 	}
 
 	MaltParam struct {
@@ -21,7 +22,7 @@ type (
 	}
 )
 
-func NewService(repo ingredients.Reader) Service {
+func NewService(repo repository.Reader) Service {
 	return &service{
 		repo: repo,
 	}

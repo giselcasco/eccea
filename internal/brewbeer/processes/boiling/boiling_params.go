@@ -8,7 +8,8 @@ type (
 	}
 
 	Hop struct {
-		AlphaAcids float64
+		NameID     string  // NameID es el nombre con que se conoce al lupulo.
+		AlphaAcids float64 // AlphaAcids is the value of AlphaAcids the hop
 		Quantity   float64 // Quantity in grams.
 		TimeOfWork uint64  // TimeOfWork in minutes.
 	}

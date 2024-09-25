@@ -2,8 +2,8 @@ package maceration_test
 
 import (
 	"eccea/internal/brewbeer/ingredients"
-	"eccea/internal/brewbeer/ingredients/repositorymocks"
 	"eccea/internal/brewbeer/processes/maceration"
+	"eccea/internal/repository/repositorymocks"
 	"errors"
 	"testing"
 

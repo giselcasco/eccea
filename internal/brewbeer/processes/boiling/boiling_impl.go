@@ -2,16 +2,28 @@ package boiling
 
 import (
 	"eccea/internal/brewbeer/ingredients"
+	"eccea/internal/repository"
 	"math"
 	"strings"
 )
 
 // service es el implementador de los metodos de proceso de coccion
-type service struct {
-	repo ingredients.Reader
-}
+type (
+	service struct {
+		repo repository.Reader
+	}
 
-func NewService(repo ingredients.Reader) Service {
+	HopParams struct {
+		NameID          string  // NameID es el nombre con que se conoce al lupulo.
+		AlphaAcids      float64 // AlphaAcids que tiene el lúpulo.
+		Proportion      float64 // Proporción que representa del total de lúpulos.
+		Characteristics []ingredients.Characteristic
+		Quantity        float64 // Quantity en gramos.
+		TimeOfWork      uint64  // TimeOfWork en minutos.
+	}
+)
+
+func NewService(repo repository.Reader) Service {
 	return &service{
 		repo: repo,
 	}
@@ -35,10 +47,16 @@ EstimateIBU es el metodo que calcula el ibu a partir de los valores en los param
 ingresados por el usuario.
 */
 func (s *service) EstimateFlavor(params *Params) (*FlavorResults, error) {
+	_, herr := s.getHops(params.HopAdditions)
+	if herr != nil {
+		return nil, herr
+	}
 	// TODO cargar perfil sensorial y
 	// calcular porcentaje de contr¡bucion para aroma, amargor y aroma
 	// y segun eso armar definición del aporte de cada lupulo
 
+	results := FlavorResults{}
+	results.SetFlavorCharacteristic("ccc")
 	return nil, nil
 }
 
@@ -51,6 +69,34 @@ func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
 		}
 	}
 	return nil
+}
+
+func (s *service) getHops(hops []Hop) ([]HopParams, error) {
+	var (
+		totalQuantity float64
+		maltParams    []HopParams
+	)
+
+	for _, h := range hops {
+		totalQuantity += h.Quantity
+	}
+	for _, h := range hops {
+		hop, err := s.repo.GetHopByName(h.NameID)
+		if err != nil {
+			return nil, err
+		}
+
+		hopProportion := (totalQuantity * 100) / h.Quantity
+		maltParam := HopParams{
+			NameID:          h.NameID,
+			Characteristics: hop.Characteristics(),
+			AlphaAcids:      hop.AlphaAcids(),
+			Proportion:      hopProportion,
+			Quantity:        h.Quantity,
+		}
+		maltParams = append(maltParams, maltParam)
+	}
+	return maltParams, nil
 }
 
 // calculateIBU implementa la formula de calculo del IBU de Glenn Tinseth

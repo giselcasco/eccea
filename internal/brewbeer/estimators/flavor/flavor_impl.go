@@ -29,7 +29,7 @@ func (c *flavorImpl) Estimate(params Params) (*Estimation, error) {
 	if macarationErr != nil {
 		return nil, macarationErr
 	}
-	boilingResults, boilingErr := c.boilingService.EstimateIBU(&params.Boiling)
+	boilingResults, boilingErr := c.boilingService.EstimateFlavor(&params.Boiling)
 	if boilingErr != nil {
 		return nil, boilingErr
 	}
@@ -37,5 +37,5 @@ func (c *flavorImpl) Estimate(params Params) (*Estimation, error) {
 	return NewEstimation(
 		macerationResults.FlavorCharacteristic(),
 		macerationResults.SmellCharacteristic(),
-		macerationResults.SmellCharacteristic()), nil
+		boilingResults.AfterTasteCharacteristic()), nil
 }

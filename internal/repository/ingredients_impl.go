@@ -1,12 +1,12 @@
-package ingredients
+package repository
 
 import (
 	"database/sql"
+	"eccea/internal/brewbeer/ingredients"
+	"eccea/internal/repository/dto"
 	"sync"
 
 	_ "github.com/mattn/go-sqlite3"
-
-	"eccea/internal/brewbeer/ingredients/dto"
 )
 
 var dbInstance *sql.DB
@@ -34,7 +34,7 @@ func (s *sqliteReader) getDbConnection() *sql.DB {
 type ingredientRepo struct {
 }
 
-func (s *sqliteReader) GetMaltByName(maltName string) (*Malt, error) {
+func (s *sqliteReader) GetMaltByName(maltName string) (*ingredients.Malt, error) {
 	dbConn := s.getDbConnection()
 	queryMalt := `SELECT 
 				ingredient_id, name, color, extract_fine_grind, extract_coarse_grind, diastatic_power 
@@ -72,7 +72,7 @@ func (s *sqliteReader) GetMaltByName(maltName string) (*Malt, error) {
 	return item.ToDomain(), nil
 }
 
-func (s *sqliteReader) GetHopByName(hopName string) (*Hop, error) {
+func (s *sqliteReader) GetHopByName(hopName string) (*ingredients.Hop, error) {
 	dbConn := s.getDbConnection()
 	queryHop := `SELECT 
 				ingredient_id, name, color, alpha_acids, beta_acids 
@@ -106,7 +106,7 @@ func (s *sqliteReader) GetHopByName(hopName string) (*Hop, error) {
 	return item.ToDomain(), nil
 }
 
-func (s *sqliteReader) GetYeastByName(yeastName string) (*Yeast, error) {
+func (s *sqliteReader) GetYeastByName(yeastName string) (*ingredients.Yeast, error) {
 	dbConn := s.getDbConnection()
 	queryYeast := `SELECT 
 				ingredient_id, name, temp_min, temp_max, time_min, time_recommended, time_max 

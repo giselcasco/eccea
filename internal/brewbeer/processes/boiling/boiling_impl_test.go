@@ -1,8 +1,8 @@
 package boiling_test
 
 import (
-	"eccea/internal/brewbeer/ingredients/repositorymocks"
 	"eccea/internal/brewbeer/processes/boiling"
+	"eccea/internal/repository/repositorymocks"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
