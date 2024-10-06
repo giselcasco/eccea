@@ -241,7 +241,16 @@ func executeFlavorUseCase() error {
 		return estimatorError
 	}
 
-	// TODO presentar resultados
+	fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá las siguientes caracteristicas referidas a sabor: \r\n: ")
+	if len(flavorEstimated.FlavorCharacteristics) > 0 {
+		fmt.Printf("%s\r\n", flavorEstimated.FlavorCharacteristics)
+	}
+	if len(flavorEstimated.SmellCharacteristics) > 0 {
+		fmt.Printf("%s\r\n", flavorEstimated.SmellCharacteristics)
+	}
+	if len(flavorEstimated.AfterTasteCharacteristics) > 0 {
+		fmt.Printf("%s\r\n", flavorEstimated.AfterTasteCharacteristics)
+	}
 
 	time.Sleep(3 * time.Second)
 	return nil

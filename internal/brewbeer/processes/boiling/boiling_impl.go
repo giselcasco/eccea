@@ -47,30 +47,43 @@ EstimateIBU es el metodo que calcula el ibu a partir de los valores en los param
 ingresados por el usuario.
 */
 func (s *service) EstimateFlavor(params *Params) (*FlavorResults, error) {
-	_, herr := s.getHops(params.HopAdditions)
+	hops, herr := s.getHops(params.HopAdditions)
 	if herr != nil {
 		return nil, herr
 	}
-	// TODO cargar perfil sensorial y
-	// calcular porcentaje de contr¡bucion para aroma, amargor y aroma
-	// y segun eso armar definición del aporte de cada lupulo
 
-	results := FlavorResults{}
-	results.SetFlavorCharacteristic("ccc")
-	return nil, nil
+	return s.buildFlavorResult(hops), nil
 }
 
-// getHop busca el lupudo en la lista de lupulos "hops" cuyo ID corresponda con "idHop"
-// opcional para busqueda en db del alphaAcids del hop
-func getHop(hops []ingredients.Hop, idHop string) *ingredients.Hop {
-	for _, hop := range hops {
-		if strings.EqualFold(hop.Name(), idHop) {
-			return &hop
+func (s *service) buildFlavorResult(hops []HopParams) *FlavorResults {
+	var (
+		flavorDescription     string
+		smellDescription      string
+		afterTasteDescription string
+		result                FlavorResults
+	)
+
+	for _, hCharacts := range hops {
+		if flavorsDes := s.buildCharacteristicsDescription(hCharacts, "sabor"); len(flavorsDes) > 0 {
+			flavorDescription += "El lúpulo " + hCharacts.NameID + " aporta " + flavorsDes
+		}
+		if smellsDes := s.buildCharacteristicsDescription(hCharacts, "aroma"); len(smellsDes) > 0 {
+			smellDescription += "El lúpulo " + hCharacts.NameID + " aporta " + smellsDes
+		}
+		if afterTasteDes := s.buildCharacteristicsDescription(hCharacts, "amargor"); len(afterTasteDes) > 0 {
+			afterTasteDescription += "El lúpulo " + hCharacts.NameID + " aporta " + afterTasteDes
 		}
 	}
-	return nil
+
+	result.SetAfterTasteCharacteristic(afterTasteDescription)
+	result.SetFlavorCharacteristic(flavorDescription)
+	result.SetSmellCharacteristic(smellDescription)
+	return &result
 }
 
+// getHops construye una lista de lupulos
+// a partir de los datos provistos por el usuario
+// y los datos almacenados en base de datos para dichos lupulos
 func (s *service) getHops(hops []Hop) ([]HopParams, error) {
 	var (
 		totalQuantity float64
@@ -87,7 +100,9 @@ func (s *service) getHops(hops []Hop) ([]HopParams, error) {
 			return nil, err
 		}
 
+		// ¿qué proporción ocupa del total?
 		hopProportion := (totalQuantity * 100) / h.Quantity
+		// ¿cuánto contribuye en cd characts segun el tiempo de trabajo?
 		charactsWithRealContribution := s.getCharactsWithRealContribution(
 			hop.Characteristics(),
 			hopProportion,
@@ -104,17 +119,21 @@ func (s *service) getHops(hops []Hop) ([]HopParams, error) {
 	return hopParams, nil
 }
 
+// getCharactsWithRealContribution
 func (s *service) getCharactsWithRealContribution(characts []ingredients.Characteristic, proportion float64, timeOfWork uint64) []ingredients.Characteristic {
 	var characteristics []ingredients.Characteristic
 	charactType := s.loadContributionTypeByTimeOfWork(timeOfWork)
 	for _, charact := range characts {
 		if strings.EqualFold(charact.CharacteristicType, charactType) {
+			charact.Contribution = (proportion * charact.Contribution) / 100
 			characteristics = append(characteristics, charact)
 		}
 	}
 	return characteristics
 }
 
+// loadContributionTypeByTimeOfWork devuelve el tipo de caracteristica
+// que mas resalta segun el tiempo de hervor del lupulo
 func (s *service) loadContributionTypeByTimeOfWork(timeOfWork uint64) string {
 	var (
 		arrayTimesOfWork        = []uint64{7, 25, 90}
@@ -165,4 +184,25 @@ func (s *service) boilingTimeFactor(timeOfWork uint64) float64 {
 
 func (s *service) proportionOfAlphaAcidUsed(alphaAcids float64, quantity float64) float64 {
 	return (alphaAcids / 100.0) * quantity * 1000
+}
+
+func (s *service) buildCharacteristicsDescription(hopParam HopParams, characteristicType string) string {
+	var characteristicsDescription string
+	var addConector = len(hopParam.Characteristics) - 1
+	for index, characterisc := range hopParam.Characteristics {
+		if strings.EqualFold(characterisc.CharacteristicType, characteristicType) {
+			characteristicsDescription += characterisc.GetDescriptionByProportion(hopParam.Proportion)
+			if index < addConector {
+				characteristicsDescription += s.getConnector(index, addConector)
+			}
+		}
+	}
+	return characteristicsDescription + ".\r"
+}
+
+func (s *service) getConnector(index, elements int) string {
+	if index+1 == elements {
+		return " y "
+	}
+	return ", "
 }
