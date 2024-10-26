@@ -31,10 +31,11 @@ func (s *sqliteReader) getDbConnection() *sql.DB {
 	return dbInstance
 }
 
-type ingredientRepo struct {
-}
-
 func (s *sqliteReader) GetMaltByName(maltName string) (*ingredients.Malt, error) {
+	if len(maltName) == 0 {
+		return nil, nil
+	}
+
 	dbConn := s.getDbConnection()
 	queryMalt := `SELECT 
 				ingredient_id, name, color, extract_fine_grind, extract_coarse_grind, diastatic_power 
@@ -57,8 +58,6 @@ func (s *sqliteReader) GetMaltByName(maltName string) (*ingredients.Malt, error)
 		&item.ID,
 		&item.Name,
 		&item.ColorSRM,
-		&item.TemperatureMin,
-		&item.TemperatureMax,
 		&item.ExtractFineGrind,
 		&item.ExtractCoarseGrind,
 		&item.DiastaticPower)
@@ -73,11 +72,12 @@ func (s *sqliteReader) GetMaltByName(maltName string) (*ingredients.Malt, error)
 }
 
 func (s *sqliteReader) GetHopByName(hopName string) (*ingredients.Hop, error) {
+	if len(hopName) == 0 {
+		return nil, nil
+	}
+
 	dbConn := s.getDbConnection()
-	queryHop := `SELECT 
-				ingredient_id, name, color, alpha_acids, beta_acids 
-				FROM hop
-				WHERE name = ?`
+	queryHop := `SELECT p.ingredient_id, p.name, p.alpha_acids, p.beta_acids FROM hop p WHERE p.name = ?`
 
 	cursorHop, err := dbConn.Query(queryHop, hopName)
 	if err != nil {
@@ -141,10 +141,7 @@ func (s *sqliteReader) GetYeastByName(yeastName string) (*ingredients.Yeast, err
 }
 
 func (s *sqliteReader) getCharacteristics(dbConn *sql.DB, ingredientID string) ([]dto.CharacteristicResponse, error) {
-	queryCharact := `SELECT c.description, c.adjetive_id, ic.type, ic.contribution 
-	FROM characteristic c
-	INNER JOIN  ingredient_characteristic ic ON c.id  =  ic.characteristic_id  
-	WHERE ic.ingredient_id = ?`
+	queryCharact := `SELECT c.id, c.description, c.adjetive_id, ic.type, ic.contribution FROM characteristic as c INNER JOIN ingredient_characteristic as ic ON c.id  =  ic.characteristic_id WHERE c.id  = ?`
 
 	cursorCharact, err := dbConn.Query(queryCharact, ingredientID)
 	if err != nil {

@@ -16,6 +16,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 )
 
 const (
@@ -96,7 +97,7 @@ func executeIBUUseCase() error {
 	boilingService := boiling.NewService(repository)
 	estimator := ibu.NewIBUImpl(boilingService)
 
-	boilingParams, err := askForBoilingParams()
+	boilingParams, err := askForBoilingParams(false)
 	if err != nil {
 		fmt.Println(buildParamsError)
 		return err
@@ -163,7 +164,7 @@ func executeColorUseCase() error {
 	maturationService := maturation.NewService()
 	estimator := color.NewColorImpl(macerationService, maturationService)
 
-	macerationParams, err := askForMacerationParams()
+	macerationParams, err := askForMacerationParams(false)
 	if err != nil {
 		fmt.Println(buildParamsError)
 		return err
@@ -212,13 +213,13 @@ func executeFlavorUseCase() error {
 	maturationService := maturation.NewService()
 	estimator := flavor.NewFlavorImpl(macerationService, boilingService, maturationService)
 
-	macerationParams, err := askForMacerationParams()
+	macerationParams, err := askForMacerationParams(true)
 	if err != nil {
 		fmt.Println(buildParamsError)
 		return err
 	}
 
-	boilingParams, err := askForBoilingParams()
+	boilingParams, err := askForBoilingParams(true)
 	if err != nil {
 		fmt.Println(buildParamsError)
 		return err
@@ -229,6 +230,7 @@ func executeFlavorUseCase() error {
 		fmt.Println(buildParamsError)
 		return err
 	}
+
 	flavorParams := flavor.Params{
 		Maceration: *macerationParams,
 		Boiling:    *boilingParams,
@@ -236,12 +238,12 @@ func executeFlavorUseCase() error {
 	}
 	flavorEstimated, estimatorError := estimator.Estimate(flavorParams)
 	if estimatorError != nil || flavorEstimated == nil {
-		fmt.Printf("No fue posible estimar las caracteristicas del sabor con los valores suministrados\r\n")
+		fmt.Printf("No fue posible estimar las caracteristicas del sabor con los valores suministrados\r\n - error: %s", estimatorError)
 		time.Sleep(2 * time.Second)
 		return estimatorError
 	}
 
-	fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá las siguientes caracteristicas referidas a sabor: \r\n: ")
+	fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá las siguientes caracteristicas referidas al sabor: \r\n: ")
 	if len(flavorEstimated.FlavorCharacteristics) > 0 {
 		fmt.Printf("%s\r\n", flavorEstimated.FlavorCharacteristics)
 	}
@@ -260,46 +262,54 @@ func executeFlavorUseCase() error {
 askForBoilingParams tiene como objetivo obtener del usuario
 los valores de los parámetros del proceso de cocción
 */
-func askForBoilingParams() (*boiling.Params, error) {
+func askForBoilingParams(onlyHops bool) (*boiling.Params, error) {
 	boilingParams := boiling.Params{}
 
-	fmt.Print("\r\nIngrese la densidad inicial: ")
-	okID, errID := fmt.Scanln(&boilingParams.InitialDensity)
-	if errID != nil || okID == 0 || boilingParams.InitialDensity == 0 {
-		fmt.Sprintf(buildParamError, " densidad inicial")
-		return nil, errID
-	}
+	if !onlyHops {
+		fmt.Print("\r\nIngrese la densidad inicial: ")
+		initialDensity, scanErr := scanFloat()
+		if scanErr != nil || initialDensity == nil {
+			fmt.Sprintf(buildParamError, " densidad inicial")
+			return nil, scanErr
+		}
+		boilingParams.InitialDensity = *initialDensity
 
-	fmt.Print("Ingrese la cantidad de litros inicial del mosto: ")
-	okWA, errWA := fmt.Scanln(&boilingParams.WortAmount)
-	if errWA != nil || okWA == 0 || boilingParams.WortAmount == 0 {
-		fmt.Sprintf(buildParamError, " la cantidad inicial del mosto")
-		return nil, errWA
+		fmt.Print("Ingrese la cantidad de litros del mosto para el proceso de cocción: ")
+		wortAmount, scanErr := scanUint()
+		if scanErr != nil || wortAmount == nil {
+			fmt.Sprintf(buildParamError, " la cantidad de litros del mosto para la cocción")
+			return nil, scanErr
+		}
+		boilingParams.WortAmount = *wortAmount
 	}
 
 	moreAdditions := yes
 	for strings.Contains(yes, moreAdditions) {
 		hopAddition := boiling.Hop{}
 
-		fmt.Print("Ingrese el porcentaje de Alfa-acidos del lúpulo: ")
-		okIDH, errAA := fmt.Scanln(&hopAddition.AlphaAcids)
-		if errAA != nil || okIDH == 0 || hopAddition.AlphaAcids == 0 {
-			fmt.Sprintf(buildParamError, "el porcentaje de Alfa-acidos")
-			return nil, errAA
+		fmt.Print("\r\nIngrese el nombre del lúpulo: ")
+		nameID, scanErr := scanCharacter()
+		if scanErr != nil || nameID == nil {
+			fmt.Sprintf(buildParamError, "el nombre del lúpulo")
+			return nil, scanErr
 		}
+		hopAddition.NameID = *nameID
 
 		fmt.Print("Ingrese la cantidad del lúpulo en gramos: ")
-		okQ, errQ := fmt.Scanln(&hopAddition.Quantity)
-		if errQ != nil || okQ == 0 || hopAddition.Quantity == 0 {
+		quantity, scanErr := scanFloat()
+		if scanErr != nil || quantity == nil {
 			fmt.Sprintf(buildParamError, "la cantidad del lúpulo en gramos")
+			return nil, scanErr
 		}
+		hopAddition.Quantity = *quantity
 
 		fmt.Print("Ingrese el tiempo de trabajo del lúpulo en minutos: ")
-		okTOW, errTOW := fmt.Scanln(&hopAddition.TimeOfWork)
-		if errTOW != nil || okTOW == 0 || hopAddition.TimeOfWork == 0 {
+		timeOfWork, scanErr := scanUint()
+		if scanErr != nil || timeOfWork == nil {
 			fmt.Sprintf(buildParamError, "el tiempo de trabajo del lúpulo")
-			return nil, errTOW
+			return nil, scanErr
 		}
+		hopAddition.TimeOfWork = *timeOfWork
 
 		boilingParams.HopAdditions = append(boilingParams.HopAdditions, hopAddition)
 		fmt.Print("Desea ingresar otro lúpulo? yes/no --> ")
@@ -317,12 +327,12 @@ func askForMaturationParams() (*maturation.Params, error) {
 	params := &maturation.Params{}
 
 	fmt.Print("\r\nIngrese el tiempo de maduración en días: ")
-	ok, err := fmt.Scanln(&params.NumberOfDays)
-	if err != nil || ok == 0 || params.NumberOfDays == 0 {
+	numberOfDays, err := scanUint()
+	if err != nil {
 		fmt.Sprintf(buildParamError, "el tiempo de maduracion")
 		return nil, err
 	}
-
+	params.NumberOfDays = *numberOfDays
 	return params, nil
 }
 
@@ -330,38 +340,47 @@ func askForMaturationParams() (*maturation.Params, error) {
 askForMacerationParams tiene como objetivo consultar al usuario
 los valores de los parámetros del proceso de maceración
 */
-func askForMacerationParams() (*maceration.Params, error) {
+func askForMacerationParams(onlyMalts bool) (*maceration.Params, error) {
 	var totalQuantity float64
 	params := &maceration.Params{}
 
-	fmt.Print("\r\nIngrese la cantidad de litros del mosto: ")
-	ok, err := fmt.Scanln(&params.WortAmount)
-	if err != nil || ok == 0 || params.WortAmount == 0 {
-		fmt.Sprintf(buildParamError, "la cantidad de litros del mosto")
-		return nil, err
+	if !onlyMalts {
+		fmt.Print("\r\nIngrese la cantidad de litros inicial del mosto: ")
+		wortAmount, scanErr := scanFloat()
+		if scanErr != nil || wortAmount == nil {
+			fmt.Sprintf(buildParamError, "la cantidad de litros del mosto")
+			return nil, scanErr
+		}
+		params.WortAmount = *wortAmount
 	}
 
 	moreAdditions := yes
 	for strings.Contains(yes, moreAdditions) {
 		maltAddition := maceration.Malt{}
 
-		fmt.Print("Ingrese el nombre de la malta: ")
-		ok, err := fmt.Scanln(&maltAddition.NameID)
-		if err != nil || ok == 0 || len(maltAddition.NameID) == 0 {
+		fmt.Print("\r\nIngrese el nombre de la malta: ")
+		nameID, err := scanCharacter()
+		if err != nil {
 			fmt.Sprintf(buildParamError, "el nombre de la malta")
 			return nil, err
 		}
+		maltAddition.NameID = *nameID
 
 		fmt.Print("Ingrese la cantidad en gramos de dicha malta: ")
-		okQ, errQ := fmt.Scanln(&maltAddition.Quantity)
-		if errQ != nil || okQ == 0 || maltAddition.Quantity == 0 {
+		quantity, QErr := scanFloat()
+		if QErr != nil {
 			fmt.Sprintf(buildParamError, "la cantidad en gramos de la malta")
+			return nil, err
 		}
-
+		maltAddition.Quantity = *quantity
 		totalQuantity += maltAddition.Quantity
 		params.MaltAdditions = append(params.MaltAdditions, maltAddition)
 		fmt.Print("Desea ingresar otra malta? yes/no --> ")
-		fmt.Scanln(&moreAdditions)
+		addMalt, addErr := scanCharacter()
+		if addErr != nil {
+			return nil, addErr
+		}
+		moreAdditions = *addMalt
 	}
 
 	params.TotalQuantity = totalQuantity
@@ -376,18 +395,65 @@ func askForFermentationParams() (*fermentation.Params, error) {
 	fermentationParams := fermentation.Params{}
 
 	fmt.Print("\r\nIngrese la densidad inicial: ")
-	okID, errID := fmt.Scanln(&fermentationParams.InitialDensity)
-	if errID != nil || okID == 0 || fermentationParams.InitialDensity == 0 {
+	initialDensity, IDErr := scanFloat()
+	if IDErr != nil {
 		fmt.Sprintf(buildParamError, "la densidad inicial")
-		return nil, errID
+		return nil, IDErr
 	}
+	fermentationParams.InitialDensity = *initialDensity
 
 	fmt.Print("Ingrese la densidad final: ")
-	okFD, errFD := fmt.Scanln(&fermentationParams.FinalDensity)
-	if errFD != nil || okFD == 0 || fermentationParams.FinalDensity == 0 {
+	finalDensity, FDErr := scanFloat()
+	if FDErr != nil {
 		fmt.Sprintf(buildParamError, "la densidad final")
-		return nil, errFD
+		return nil, FDErr
+	}
+	fermentationParams.FinalDensity = *finalDensity
+	return &fermentationParams, nil
+}
+
+func scanUint() (*uint64, error) {
+	var uintValue uint64
+	_, err := fmt.Scanln(&uintValue)
+	if err != nil {
+		return nil, err
 	}
 
-	return &fermentationParams, nil
+	uintValueStr := strconv.FormatUint(uintValue, 10)
+	if _, atoiErr := strconv.Atoi(uintValueStr); atoiErr != nil {
+		fmt.Println("El valor ingresado no es un número")
+		return nil, err
+	}
+
+	return &uintValue, nil
+}
+
+func scanFloat() (*float64, error) {
+	var floatValueStr string
+	_, err := fmt.Scanln(&floatValueStr)
+	if err != nil {
+		return nil, err
+	}
+
+	floatValue, parseErr := strconv.ParseFloat(floatValueStr, 64)
+	if parseErr != nil {
+		fmt.Println("El valor ingresodo no es un número flotante")
+		return nil, parseErr
+	}
+
+	return &floatValue, nil
+}
+
+func scanCharacter() (*string, error) {
+	var strValue string
+	_, err := fmt.Scanln(&strValue)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(strValue) == 0 || !unicode.IsLetter(rune(strValue[0])) {
+		fmt.Println("El valor ingresado es incorrecto")
+		return nil, err
+	}
+	return &strValue, nil
 }

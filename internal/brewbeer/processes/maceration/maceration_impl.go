@@ -63,7 +63,7 @@ func (s *service) getMalts(malts []Malt, totalQuantity float64) ([]MaltParam, er
 
 	for _, m := range malts {
 		malt, err := s.repo.GetMaltByName(m.NameID)
-		if err != nil {
+		if err != nil || malt == nil {
 			return nil, err
 		}
 
@@ -89,10 +89,10 @@ func (s *service) buildFlavorResult(malts []MaltParam) *FlavorResults {
 
 	for _, mCharacts := range malts {
 		if flavorsDes := s.buildCharacteristicsDescription(mCharacts, "sabor"); len(flavorsDes) > 0 {
-			flavorDescription += "La malta " + mCharacts.NameID + " aporta " + flavorsDes
+			flavorDescription += "La malta " + mCharacts.NameID + " aporta " + flavorsDes + ".\r"
 		}
 		if smellsDes := s.buildCharacteristicsDescription(mCharacts, "aroma"); len(smellsDes) > 0 {
-			smellDescription += "La malta " + mCharacts.NameID + " aporta " + smellsDes
+			smellDescription += "La malta " + mCharacts.NameID + " aporta " + smellsDes + ".\r"
 		}
 	}
 
@@ -147,7 +147,7 @@ func (s *service) buildCharacteristicsDescription(maltParam MaltParam, character
 			}
 		}
 	}
-	return characteristicsDescription + ".\r"
+	return characteristicsDescription
 }
 
 func (s *service) countElements(ccharacts []ingredients.Characteristic, characteristicType string) int {

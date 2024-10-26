@@ -35,7 +35,13 @@ ingresados por el usuario.
 */
 func (s *service) EstimateIBU(params *Params) (float64, error) {
 	var ibu float64
-	for _, hopAddition := range params.HopAdditions {
+
+	hops, err := s.getHops(params.HopAdditions)
+	if err != nil {
+		return ibu, err
+	}
+
+	for _, hopAddition := range hops {
 		ibu += s.calculateIBU(params, hopAddition)
 	}
 
@@ -96,7 +102,7 @@ func (s *service) getHops(hops []Hop) ([]HopParams, error) {
 
 	for _, h := range hops {
 		hop, err := s.repo.GetHopByName(h.NameID)
-		if err != nil {
+		if err != nil || hop == nil {
 			return nil, err
 		}
 
@@ -150,7 +156,7 @@ func (s *service) loadContributionTypeByTimeOfWork(timeOfWork uint64) string {
 }
 
 // calculateIBU implementa la formula de calculo del IBU de Glenn Tinseth
-func (s *service) calculateIBU(params *Params, addition Hop) float64 {
+func (s *service) calculateIBU(params *Params, addition HopParams) float64 {
 	firstFactor := s.greatnessFactor(params.InitialDensity)
 	secondFactor := s.boilingTimeFactor(addition.TimeOfWork)
 	thirdFactor := s.proportionOfAlphaAcidUsed(addition.AlphaAcids, addition.Quantity)

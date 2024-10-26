@@ -28,18 +28,20 @@ var mapTypeAdjetives = map[int][]string{
 	2: {"sutil", "suave", "definido", "intenso"},
 	3: {"sutil", "suave", "definida", "intensa"},
 	4: {"sutiles", "suaves", "marcados", "intensos"},
+	5: {"dejo a", "notas de", "presencia de"},
+	6: {"dejos", "notas", "presencias"},
 }
 
 // GetDescriptionByProportion devuelve la descripcion de la caracteristica teniendo en cuenta
 // el grado en que dicha descripcion puede cumplirse
 func (c *Characteristic) GetDescriptionByProportion(proportion float64) string {
 	contributionPercentage := getContributionPercentage(c.Contribution, proportion)
-	if adjetives, ok := mapTypeAdjetives[c.TypeAdjetives]; ok && len(adjetives) > 0 {
-		partitionBase := 100 / len(adjetives)
+	if adjectives, ok := mapTypeAdjetives[c.TypeAdjetives]; ok && len(adjectives) > 0 {
+		partitionBase := 100 / len(adjectives)
 		degree := partitionBase
-		for _, adjetive := range adjetives {
+		for _, adjective := range adjectives {
 			if contributionPercentage <= float64(degree) {
-				return adjetive + space + string(c.Description)
+				return adjective + space + c.Description
 			}
 			degree += partitionBase
 		}
