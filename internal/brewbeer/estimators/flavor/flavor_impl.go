@@ -4,6 +4,7 @@ import (
 	"eccea/internal/brewbeer/processes/boiling"
 	"eccea/internal/brewbeer/processes/maceration"
 	"eccea/internal/brewbeer/processes/maturation"
+	"strings"
 )
 
 // flavorImpl es la implementacion para el caso de uso de estimación de caracteristicas del sabor
@@ -33,9 +34,13 @@ func (c *flavorImpl) Estimate(params Params) (*Estimation, error) {
 	if boilingErr != nil {
 		return nil, boilingErr
 	}
-	// TODO get characterists AfterTasteChar
+
 	return NewEstimation(
-		macerationResults.FlavorCharacteristic(),
-		macerationResults.SmellCharacteristic(),
+		c.joinResult(macerationResults.FlavorCharacteristic(), boilingResults.FlavorCharacteristic()),
+		c.joinResult(macerationResults.SmellCharacteristic(), boilingResults.SmellCCharacteristic()),
 		boilingResults.AfterTasteCharacteristic()), nil
+}
+
+func (c *flavorImpl) joinResult(characteristics string, moreCharacteristics string) string {
+	return strings.Join([]string{characteristics, moreCharacteristics}, ", ")
 }

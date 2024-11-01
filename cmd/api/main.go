@@ -38,8 +38,8 @@ const (
 )
 
 func main() {
+	fmt.Println(welcome)
 	for {
-		fmt.Println(welcome)
 		fmt.Println(options)
 
 		reader := bufio.NewReader(os.Stdin)
@@ -106,7 +106,7 @@ func executeIBUUseCase() error {
 	ibuParams := ibu.Params{Boiling: *boilingParams}
 	ibuEstimated, estimatorError := estimator.Estimate(ibuParams)
 	if estimatorError != nil || ibuEstimated <= 0 {
-		fmt.Printf("No fue posible calcula el IBU con los valores suministrados\r\n")
+		fmt.Printf("No fue posible calcula el IBU con los valores suministrados\n")
 		time.Sleep(2 * time.Second)
 		return estimatorError
 	}
@@ -207,9 +207,9 @@ el servicio del proceso de maduración
 y el repositorio de ingredientes
 */
 func executeFlavorUseCase() error {
-	repository := repository.NewSqliteReader()
-	macerationService := maceration.NewService(repository)
-	boilingService := boiling.NewService(repository)
+	sqliteReader := repository.NewSqliteReader()
+	macerationService := maceration.NewService(sqliteReader)
+	boilingService := boiling.NewService(sqliteReader)
 	maturationService := maturation.NewService()
 	estimator := flavor.NewFlavorImpl(macerationService, boilingService, maturationService)
 
@@ -237,21 +237,32 @@ func executeFlavorUseCase() error {
 		Maturation: *maturationParams,
 	}
 	flavorEstimated, estimatorError := estimator.Estimate(flavorParams)
-	if estimatorError != nil || flavorEstimated == nil {
-		fmt.Printf("No fue posible estimar las caracteristicas del sabor con los valores suministrados\r\n - error: %s", estimatorError)
+	if flavorEstimated == nil ||
+		(len(flavorEstimated.FlavorCharacteristics) == 0 &&
+			len(flavorEstimated.SmellCharacteristics) == 0 &&
+			len(flavorEstimated.AfterTasteCharacteristics) == 0) {
+		fmt.Printf("No fue posible estimar las caracteristicas del sabor")
+		
+		if estimatorError != nil {
+			fmt.Printf("- error: %s", estimatorError.Error())
+		}
 		time.Sleep(2 * time.Second)
 		return estimatorError
 	}
 
-	fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá las siguientes caracteristicas referidas al sabor: \r\n: ")
-	if len(flavorEstimated.FlavorCharacteristics) > 0 {
-		fmt.Printf("%s\r\n", flavorEstimated.FlavorCharacteristics)
-	}
-	if len(flavorEstimated.SmellCharacteristics) > 0 {
-		fmt.Printf("%s\r\n", flavorEstimated.SmellCharacteristics)
-	}
-	if len(flavorEstimated.AfterTasteCharacteristics) > 0 {
-		fmt.Printf("%s\r\n", flavorEstimated.AfterTasteCharacteristics)
+	if len(flavorEstimated.FlavorCharacteristics) > 0 ||
+		len(flavorEstimated.SmellCharacteristics) > 0 ||
+		len(flavorEstimated.AfterTasteCharacteristics) > 0 {
+		fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá las siguientes caracteristicas: \r\n")
+		if len(flavorEstimated.FlavorCharacteristics) > 0 {
+			fmt.Printf("%s\r\n", flavorEstimated.FlavorCharacteristics)
+		}
+		if len(flavorEstimated.SmellCharacteristics) > 0 {
+			fmt.Printf("%s\r\n", flavorEstimated.SmellCharacteristics)
+		}
+		if len(flavorEstimated.AfterTasteCharacteristics) > 0 {
+			fmt.Printf("%s\r\n", flavorEstimated.AfterTasteCharacteristics)
+		}
 	}
 
 	time.Sleep(3 * time.Second)

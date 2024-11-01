@@ -940,13 +940,6 @@
             </set>
           </value>
         </entry>
-        <entry key="ingredientRepo">
-          <value>
-            <set>
-              <option value="file://$PROJECT_DIR$/internal/repository/ingredients_impl.go" />
-            </set>
-          </value>
-        </entry>
         <entry key="inlineB">
           <value>
             <set>
@@ -1548,7 +1541,7 @@
         <entry key="file://$PROJECT_DIR$/cmd/api/main.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1729731675035" />
+              <option name="lastModified" value="1730421422226" />
             </ScannedPath>
           </value>
         </entry>
@@ -1693,7 +1686,7 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/estimators/flavor/flavor_impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1729214255028" />
+              <option name="lastModified" value="1730421899039" />
               <option name="schema">
                 <list>
                   <option value="flavorImpl" />
@@ -1815,7 +1808,7 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/boiling/boiling_impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1729902439052" />
+              <option name="lastModified" value="1730420410765" />
               <option name="schema">
                 <list>
                   <option value="service" />
@@ -2105,7 +2098,7 @@
         <entry key="file://$PROJECT_DIR$/internal/repository/ingredients_impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1729903956692" />
+              <option name="lastModified" value="1730154016118" />
               <option name="schema">
                 <list>
                   <option value="sqliteReader" />
@@ -3794,7 +3787,6 @@
         <entry key="indir_cir3" value="indirCir3" />
         <entry key="info_constraint" value="InfoConstraint" />
         <entry key="info_order_by" value="InfoOrderBy" />
-        <entry key="ingredient_repo" value="ingredientRepo" />
         <entry key="inline_b" value="inlineB" />
         <entry key="inline_c" value="inlineC" />
         <entry key="inline_d" value="inlineD" />
@@ -3941,6 +3933,6 @@
         <entry key="yeast_response" value="YeastResponse" />
       </map>
     </option>
-    <option name="lastTimeChecked" value="1729730475284" />
+    <option name="lastTimeChecked" value="1729976391619" />
   </component>
 </project>

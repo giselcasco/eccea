@@ -71,13 +71,13 @@ func (s *service) buildFlavorResult(hops []HopParams) *FlavorResults {
 
 	for _, hCharacts := range hops {
 		if flavorsDes := s.buildCharacteristicsDescription(hCharacts, "sabor"); len(flavorsDes) > 0 {
-			flavorDescription += "El lúpulo " + hCharacts.NameID + " aporta " + flavorsDes
+			flavorDescription += "El lúpulo " + hCharacts.NameID + " aporta " + flavorsDes + ".\r"
 		}
 		if smellsDes := s.buildCharacteristicsDescription(hCharacts, "aroma"); len(smellsDes) > 0 {
-			smellDescription += "El lúpulo " + hCharacts.NameID + " aporta " + smellsDes
+			smellDescription += "El lúpulo " + hCharacts.NameID + " aporta " + smellsDes + ".\r"
 		}
 		if afterTasteDes := s.buildCharacteristicsDescription(hCharacts, "amargor"); len(afterTasteDes) > 0 {
-			afterTasteDescription += "El lúpulo " + hCharacts.NameID + " aporta " + afterTasteDes
+			afterTasteDescription += "El lúpulo " + hCharacts.NameID + " aporta " + afterTasteDes + ".\r"
 		}
 	}
 
@@ -119,6 +119,7 @@ func (s *service) getHops(hops []Hop) ([]HopParams, error) {
 			AlphaAcids:      hop.AlphaAcids(),
 			Proportion:      hopProportion,
 			Quantity:        h.Quantity,
+			TimeOfWork:      h.TimeOfWork,
 		}
 		hopParams = append(hopParams, hopParam)
 	}
@@ -203,7 +204,7 @@ func (s *service) buildCharacteristicsDescription(hopParam HopParams, characteri
 			}
 		}
 	}
-	return characteristicsDescription + ".\r"
+	return characteristicsDescription
 }
 
 func (s *service) getConnector(index, elements int) string {

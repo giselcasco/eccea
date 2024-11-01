@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"eccea/internal/brewbeer/ingredients"
 	"eccea/internal/repository/dto"
+	"os"
 	"sync"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -21,7 +22,8 @@ func NewSqliteReader() Reader {
 
 func (s *sqliteReader) getDbConnection() *sql.DB {
 	s.once.Do(func() {
-		newDb, err := sql.Open("sqlite3", "brewbeer-data.sqlite")
+		data := os.Getenv("BREWBEER_DATA")
+		newDb, err := sql.Open("sqlite3", data)
 		if err != nil {
 			panic(err)
 		}
@@ -149,10 +151,6 @@ func (s *sqliteReader) getCharacteristics(dbConn *sql.DB, ingredientID string) (
 	}
 
 	defer cursorCharact.Close()
-
-	if !cursorCharact.Next() {
-		return nil, nil
-	}
 
 	charactList := []dto.CharacteristicResponse{}
 	charactItem := dto.CharacteristicResponse{}
