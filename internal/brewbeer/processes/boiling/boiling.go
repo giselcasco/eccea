@@ -6,4 +6,5 @@ package boiling
 type Service interface {
 	EstimateIBU(params *Params) (float64, error)
 	EstimateFlavor(params *Params) (*FlavorResults, error)
+	EstimateBeer(params *Params) (*Results, error)
 }

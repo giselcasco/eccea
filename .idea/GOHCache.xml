@@ -351,8 +351,10 @@
         <entry key="Results">
           <value>
             <set>
+              <option value="file://$PROJECT_DIR$/internal/brewbeer/processes/boiling/boiling_results.go" />
               <option value="file://$PROJECT_DIR$/internal/brewbeer/processes/fermentation/fermentation_results.go" />
               <option value="file://$PROJECT_DIR$/internal/brewbeer/processes/maceration/maceration_results.go" />
+              <option value="file://$PROJECT_DIR$/internal/brewbeer/processes/maturation/maturation_results.go" />
             </set>
           </value>
         </entry>
@@ -711,6 +713,13 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/pkg/mod/github.com/stretchr/testify@v1.8.4/mock/mock.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="beerImpl">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/internal/brewbeer/estimators/beer/beer_impl.go" />
             </set>
           </value>
         </entry>
@@ -1541,7 +1550,7 @@
         <entry key="file://$PROJECT_DIR$/cmd/api/main.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1730421422226" />
+              <option name="lastModified" value="1730769035437" />
             </ScannedPath>
           </value>
         </entry>
@@ -1586,14 +1595,14 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/estimators/beer/beer.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1718630048316" />
+              <option name="lastModified" value="1730521989591" />
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/estimators/beer/beer_estimation.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1727047568147" />
+              <option name="lastModified" value="1730768630063" />
               <option name="schema">
                 <list>
                   <option value="Estimation" />
@@ -1602,10 +1611,22 @@
             </ScannedPath>
           </value>
         </entry>
+        <entry key="file://$PROJECT_DIR$/internal/brewbeer/estimators/beer/beer_impl.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1730778377033" />
+              <option name="schema">
+                <list>
+                  <option value="beerImpl" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/estimators/beer/beer_params.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1718630048317" />
+              <option name="lastModified" value="1730519941602" />
               <option name="schema">
                 <list>
                   <option value="Params" />
@@ -1674,7 +1695,7 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/estimators/flavor/flavor_estimation.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1727053215236" />
+              <option name="lastModified" value="1730768969418" />
               <option name="schema">
                 <list>
                   <option value="Estimation" />
@@ -1686,7 +1707,7 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/estimators/flavor/flavor_impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1730421899039" />
+              <option name="lastModified" value="1730769022060" />
               <option name="schema">
                 <list>
                   <option value="flavorImpl" />
@@ -1801,14 +1822,14 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/boiling/boiling.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1727237356861" />
+              <option name="lastModified" value="1730522435168" />
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/boiling/boiling_impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1730420410765" />
+              <option name="lastModified" value="1730522520612" />
               <option name="schema">
                 <list>
                   <option value="service" />
@@ -1841,10 +1862,11 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/boiling/boiling_results.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1728254657505" />
+              <option name="lastModified" value="1730522296676" />
               <option name="schema">
                 <list>
                   <option value="FlavorResults" />
+                  <option value="Results" />
                 </list>
               </option>
             </ScannedPath>
@@ -1865,14 +1887,14 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/fermentation/fermentation.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1719010355822" />
+              <option name="lastModified" value="1730523293146" />
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/fermentation/fermentation_impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1719010355822" />
+              <option name="lastModified" value="1730523280300" />
               <option name="schema">
                 <list>
                   <option value="service" />
@@ -1903,7 +1925,7 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/fermentation/fermentation_results.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1727237356861" />
+              <option name="lastModified" value="1730517315177" />
               <option name="schema">
                 <list>
                   <option value="Results" />
@@ -1927,14 +1949,14 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/maceration/maceration.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1727047568104" />
+              <option name="lastModified" value="1730518162387" />
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/maceration/maceration_impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1729902268264" />
+              <option name="lastModified" value="1730518511193" />
               <option name="schema">
                 <list>
                   <option value="service" />
@@ -1967,7 +1989,7 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/maceration/maceration_results.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1727047568147" />
+              <option name="lastModified" value="1730518286929" />
               <option name="schema">
                 <list>
                   <option value="Results" />
@@ -1993,14 +2015,14 @@
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/maturation/maturation.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1722782777315" />
+              <option name="lastModified" value="1730777949578" />
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/maturation/maturation_impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1727053215232" />
+              <option name="lastModified" value="1730777941006" />
               <option name="schema">
                 <list>
                   <option value="service" />
@@ -2023,6 +2045,18 @@
               <option name="schema">
                 <list>
                   <option value="Params" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/internal/brewbeer/processes/maturation/maturation_results.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1730777934153" />
+              <option name="schema">
+                <list>
+                  <option value="Results" />
                 </list>
               </option>
             </ScannedPath>
@@ -3731,6 +3765,7 @@
         <entry key="assertion_tester_non_conforming_object" value="AssertionTesterNonConformingObject" />
         <entry key="assertions" value="Assertions" />
         <entry key="bar" value="Bar" />
+        <entry key="beer_impl" value="beerImpl" />
         <entry key="buffer_t" value="bufferT" />
         <entry key="call" value="Call" />
         <entry key="call_order_suite" value="CallOrderSuite" />

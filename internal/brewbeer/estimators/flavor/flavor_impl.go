@@ -34,8 +34,9 @@ func (c *flavorImpl) Estimate(params Params) (*Estimation, error) {
 	if boilingErr != nil {
 		return nil, boilingErr
 	}
-
+	flavorMaturation := c.maturationService.EstimateFlavor(&params.Maturation)
 	return NewEstimation(
+		flavorMaturation,
 		c.joinResult(macerationResults.FlavorCharacteristic(), boilingResults.FlavorCharacteristic()),
 		c.joinResult(macerationResults.SmellCharacteristic(), boilingResults.SmellCCharacteristic()),
 		boilingResults.AfterTasteCharacteristic()), nil

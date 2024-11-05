@@ -55,6 +55,22 @@ func (s *service) EstimateFlavor(params *Params) (*FlavorResults, error) {
 	return s.buildFlavorResult(malts), nil
 }
 
+func (s *service) EstimateBeer(params *Params) (*Results, error) {
+	if params == nil {
+		return nil, errors.New("nil params error")
+	}
+
+	malts, err := s.getMalts(params.MaltAdditions, params.TotalQuantity)
+	if err != nil {
+		return nil, err
+	}
+
+	finalColorSRM := s.calculateFinalColorSRM(params, malts)
+	colorResults := s.buildColorResult(finalColorSRM, malts)
+	flavorResults := s.buildFlavorResult(malts)
+	return s.buildResult(colorResults, flavorResults), nil
+}
+
 func (s *service) getMalts(malts []Malt, totalQuantity float64) ([]MaltParam, error) {
 	var (
 		proportion float64
@@ -188,4 +204,14 @@ func (s *service) getDescriptionColor(colorSRM uint64) string {
 	}
 
 	return mapColorDescription[daysCompare]
+}
+
+func (s *service) buildResult(colorResults *ColorResults, flavorResults *FlavorResults) *Results {
+	results := &Results{}
+	results.SetColor(colorResults.Color())
+	results.SetColorDescription(colorResults.ColorDescription())
+	results.SetColorCharacteristic(colorResults.ColorCharacteristic())
+	results.SetFlavorCharacteristic(flavorResults.FlavorCharacteristic())
+	results.SetSmellCharacteristic(flavorResults.SmellCharacteristic())
+	return results
 }

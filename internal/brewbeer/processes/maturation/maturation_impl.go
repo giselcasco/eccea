@@ -29,12 +29,11 @@ func (s *service) EstimateColor(params *Params) string {
 
 func (s *service) EstimateFlavor(params *Params) string {
 	var daysCompare = uint64(7)
-	// TODO modificar mapa, cargar caracteristicas por maduración
 	var mapFlavorIntensity = map[uint64]string{
-		7:   "alta turbidez y color opaco.",
-		14:  "disminución de la turbidez y color más claro.",
-		30:  "alta claridad y color definido.",
-		100: "máxima pureza y claridad del color.",
+		7:   "dejos de mantequilla y mansaza verde.",
+		14:  "perfil equilibrado con sensacón de alcohol suave.",
+		30:  "textura agradable y sensación de suavidad en el paladar.",
+		100: "madurez y armonia de sabores.",
 	}
 
 	if params.NumberOfDays > 0 {
@@ -46,4 +45,8 @@ func (s *service) EstimateFlavor(params *Params) string {
 		}
 	}
 	return mapFlavorIntensity[daysCompare]
+}
+
+func (s *service) EstimateBeer(params *Params) Results {
+	return NewResults(s.EstimateColor(params), s.EstimateFlavor(params))
 }

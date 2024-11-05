@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"eccea/internal/brewbeer/estimators/abv"
+	"eccea/internal/brewbeer/estimators/beer"
 	"eccea/internal/brewbeer/estimators/color"
 	"eccea/internal/brewbeer/estimators/flavor"
 	"eccea/internal/brewbeer/estimators/ibu"
@@ -82,6 +83,61 @@ var exeOptions = map[int64]executor{
 	4: executeABVUseCase,
 	3: executeColorUseCase,
 	2: executeFlavorUseCase,
+	1: executeBeerUseCase,
+}
+
+/*
+executeBeerUseCase es responsable de estimar IBU, ABV,
+valor del color resultante, descripción y caracteristicas del color,
+asi como caracteristicas del sabor, aroma y retrogusto;
+para lograr ello consulta al usuario los valores que necesita y
+carga los servicios y repositorio necesarios para el procesamiento
+*/
+func executeBeerUseCase() error {
+	sqliteReader := repository.NewSqliteReader()
+	boilingService := boiling.NewService(sqliteReader)
+	macerationService := maceration.NewService(sqliteReader)
+	maturationService := maturation.NewService()
+	fermentationService := fermentation.NewService()
+	estimator := beer.NewBeerImpl(macerationService, boilingService, fermentationService, maturationService)
+
+	boilingParams, err := askForBoilingParams(false)
+	if err != nil {
+		fmt.Println(buildParamsError)
+		return err
+	}
+
+	fermentationParams, err := askForFermentationParams()
+	if err != nil {
+		fmt.Println(buildParamsError)
+		return err
+	}
+
+	macerationParams, err := askForMacerationParams(false)
+	if err != nil {
+		fmt.Println(buildParamsError)
+		return err
+	}
+
+	maturationParams, err := askForMaturationParams()
+	if err != nil {
+		fmt.Println(buildParamsError)
+		return err
+	}
+
+	params := beer.Params{
+		Maceration:   macerationParams,
+		Boiling:      boilingParams,
+		Fermentation: fermentationParams,
+		Maturation:   maturationParams,
+	}
+	_, estimatorErr := estimator.Estimate(params)
+	if estimatorErr != nil {
+		fmt.Printf("No fue posible estimar las caracteristicas de la cerveza con los valores suministrados\n")
+		time.Sleep(2 * time.Second)
+		return estimatorErr
+	}
+	return err
 }
 
 /*
@@ -159,8 +215,8 @@ el servicio del proceso de maduración
 y el repositorio de ingredientes
 */
 func executeColorUseCase() error {
-	repository := repository.NewSqliteReader()
-	macerationService := maceration.NewService(repository)
+	sqliteReader := repository.NewSqliteReader()
+	macerationService := maceration.NewService(sqliteReader)
 	maturationService := maturation.NewService()
 	estimator := color.NewColorImpl(macerationService, maturationService)
 
@@ -231,18 +287,18 @@ func executeFlavorUseCase() error {
 		return err
 	}
 
-	flavorParams := flavor.Params{
-		Maceration: *macerationParams,
-		Boiling:    *boilingParams,
-		Maturation: *maturationParams,
-	}
-	flavorEstimated, estimatorError := estimator.Estimate(flavorParams)
+	flavorParams := flavor.NewParams(
+		*macerationParams,
+		*boilingParams,
+		*maturationParams,
+	)
+	flavorEstimated, estimatorError := estimator.Estimate(*flavorParams)
 	if flavorEstimated == nil ||
 		(len(flavorEstimated.FlavorCharacteristics) == 0 &&
 			len(flavorEstimated.SmellCharacteristics) == 0 &&
 			len(flavorEstimated.AfterTasteCharacteristics) == 0) {
 		fmt.Printf("No fue posible estimar las caracteristicas del sabor")
-		
+
 		if estimatorError != nil {
 			fmt.Printf("- error: %s", estimatorError.Error())
 		}
@@ -263,6 +319,8 @@ func executeFlavorUseCase() error {
 		if len(flavorEstimated.AfterTasteCharacteristics) > 0 {
 			fmt.Printf("%s\r\n", flavorEstimated.AfterTasteCharacteristics)
 		}
+		fmt.Printf("Segun la cantidad de días de maduración, se estima que la cerveza tendrá %s \r\n",
+			flavorEstimated.FlavorMaturation)
 	}
 
 	time.Sleep(3 * time.Second)

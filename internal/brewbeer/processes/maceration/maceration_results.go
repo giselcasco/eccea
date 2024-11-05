@@ -3,9 +3,10 @@ package maceration
 type (
 	Results struct {
 		colorSRM              uint64
+		colorDescription      string
+		colorCharacteristics  string
 		flavorCharacteristics string
 		smellCharacteristics  string
-		colorCharacteristics  string
 	}
 
 	ColorResults struct {
@@ -20,10 +21,6 @@ type (
 	}
 )
 
-func NewResults() *Results {
-	return &Results{}
-}
-
 func (r *Results) Color() uint64 {
 	return r.colorSRM
 }
@@ -32,12 +29,20 @@ func (r *Results) SetColor(color uint64) {
 	r.colorSRM = color
 }
 
-func (r *Results) SetFlavorCharacteristic(flavorCharacteristic string) {
-	r.flavorCharacteristics = flavorCharacteristic
+func (r *Results) ColorDescription() string {
+	return r.colorDescription
+}
+
+func (r *Results) SetColorDescription(colorDes string) {
+	r.colorDescription = colorDes
 }
 
 func (r *Results) SetColorCharacteristic(colorCharacteristic string) {
 	r.colorCharacteristics = colorCharacteristic
+}
+
+func (r *Results) SetFlavorCharacteristic(flavorCharacteristic string) {
+	r.flavorCharacteristics = flavorCharacteristic
 }
 
 func (r *Results) SetSmellCharacteristic(smellCharacteristic string) {
@@ -54,10 +59,6 @@ func (r *Results) ColorCharacteristic() string {
 
 func (r *Results) SmellCharacteristic() string {
 	return r.smellCharacteristics
-}
-
-func NewColorResults() *ColorResults {
-	return &ColorResults{}
 }
 
 func (c *ColorResults) Color() uint64 {

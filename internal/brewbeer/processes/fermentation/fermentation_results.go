@@ -7,10 +7,6 @@ type Results struct {
 	colorCharacteristics  string
 }
 
-func NewResults() *Results {
-	return &Results{}
-}
-
 func (r *Results) ABV() float64 {
 	return r.abv
 }

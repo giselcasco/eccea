@@ -61,6 +61,22 @@ func (s *service) EstimateFlavor(params *Params) (*FlavorResults, error) {
 	return s.buildFlavorResult(hops), nil
 }
 
+func (s *service) EstimateBeer(params *Params) (*Results, error) {
+	var ibu float64
+
+	hops, herr := s.getHops(params.HopAdditions)
+	if herr != nil {
+		return nil, herr
+	}
+
+	for _, hopAddition := range hops {
+		ibu += s.calculateIBU(params, hopAddition)
+	}
+
+	flavorResult := s.buildFlavorResult(hops)
+	return s.buildResult(ibu, flavorResult), nil
+}
+
 func (s *service) buildFlavorResult(hops []HopParams) *FlavorResults {
 	var (
 		flavorDescription     string
@@ -212,4 +228,13 @@ func (s *service) getConnector(index, elements int) string {
 		return " y "
 	}
 	return ", "
+}
+
+func (s *service) buildResult(ibu float64, flavorResult *FlavorResults) *Results {
+	results := &Results{}
+	results.SetIBU(ibu)
+	results.SetSmellCharacteristic(flavorResult.SmellCCharacteristic())
+	results.SetFlavorCharacteristic(flavorResult.FlavorCharacteristic())
+	results.SetAfterTasteCharacteristic(flavorResult.AfterTasteCharacteristic())
+	return results
 }

@@ -4,4 +4,5 @@ package maceration
 type Service interface {
 	EstimateColor(params *Params) (*ColorResults, error)
 	EstimateFlavor(params *Params) (*FlavorResults, error)
+	EstimateBeer(params *Params) (*Results, error)
 }

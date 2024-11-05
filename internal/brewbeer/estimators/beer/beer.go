@@ -1,5 +1,5 @@
 package beer
 
 type Beer interface {
-	Estimate(params Params) (Estimation, error)
+	Estimate(params Params) (*Estimation, error)
 }
