@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="brewbeer-data.db" readonly="0" foreign_keys="0" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="224"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1757"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="ingredient" custom_title="0" dock_id="1" table="4,10:mainingredient"/><dock_state state="000000ff00000000fd0000000100000002000003560000032dfc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000000003560000010100ffffff000003560000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="characteristic" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths/><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="ingredient" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="21"/><column index="2" value="38"/><column index="3" value="63"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">select * from ingredient;
+select * from hop;
+select * from malt;
+select * from characteristic;
+select * from ingredient_characteristic ;
+
+
+insert into ingredient VALUES(3,'hop','CHINOOK');
+insert into ingredient VALUES(4,'hop','CITRA');
+insert into ingredient VALUES(2,'hop','CASCADE');
+
+insert into ingredient VALUES(5,'malt','PALE ALE');
+insert into ingredient VALUES(6,'malt','VIENNA');
+
+insert into malt VALUES(5,'PALE ALE', 3.5,0.80,0.78, 85);
+insert into malt VALUES(6,'VIENNA', 3.5,0.80,0.78, 95);
+
+
+insert into hop VALUES(2,'CASCADE', 10,0.77);
+insert into hop VALUES(3,'CHINOOK', 12,3.5);
+insert into hop VALUES(4,'CITRA', 13,4);
+
+insert into malt VALUES(1,'CARAMEL', 10,0.77,0,0);
+/*1: {&quot;sutiles&quot;, &quot;suaves&quot;, &quot;marcadas&quot;, &quot;intensas&quot;},
+	2: {&quot;sutil&quot;, &quot;suave&quot;, &quot;definido&quot;, &quot;intenso&quot;},
+	3: {&quot;sutil&quot;, &quot;suave&quot;, &quot;definida&quot;, &quot;intensa&quot;},
+	4: {&quot;sutiles&quot;, &quot;suaves&quot;, &quot;marcados&quot;, &quot;intensos&quot;},
+	5: {&quot;dejo a&quot;, &quot;notas de&quot;, &quot;presencia de&quot;},
+	6: {&quot;dejos&quot;, &quot;notas&quot;, &quot;presencias&quot;},
+	
+	--&gt; en los lupulos la mayoria de las caracteristicas son de aroma
+	--&gt; a mayor alfa-acidos mayor sabor/aroma
+	*/
+	
+insert into characteristic VALUES(1,'tonalidades doradas',1);
+insert into characteristic VALUES(2,'ambar dorado',2);
+insert into characteristic VALUES(3,'caramelo',2);
+insert into characteristic VALUES(4,'cítrico',5);
+insert into characteristic VALUES(5,'frutales',6);
+insert into characteristic VALUES(6,'hierbas',1);
+insert into characteristic VALUES(7,'picante',2);
+
+
+insert into characteristic VALUES(8,'condimentada',2);
+insert into characteristic VALUES(9,'pino resinoso',5);
+insert into characteristic VALUES(10,'flores',5);
+insert into characteristic VALUES(11,'melón',5);
+insert into characteristic VALUES(12,'uva',5);
+insert into characteristic VALUES(13,'frutas tropicales',5);
+insert into characteristic VALUES(14,'fresa',5);
+insert into characteristic VALUES(15,'mora',5);
+insert into characteristic VALUES(16,'bayas',5);
+insert into characteristic VALUES(17,'malta',5);
+insert into characteristic VALUES(18,'galleta',5);
+insert into characteristic VALUES(19,'nueces',5);
+insert into characteristic VALUES(20,'miel',3);
+insert into characteristic VALUES(21,'final limpio',2);
+insert into characteristic VALUES(22,'pan',5);
+
+
+insert into ingredient_characteristic VALUES(1,4,9,'sabor', 2);
+insert into ingredient_characteristic VALUES(2,4,7,'sabor', 2);
+insert into ingredient_characteristic VALUES(3,4,4,'sabor', 5);
+insert into ingredient_characteristic VALUES(4,4,4,'aroma', 5);
+insert into ingredient_characteristic VALUES(5,4,12,'aroma', 4);
+insert into ingredient_characteristic VALUES(6,4,13,'sabor', 4);
+insert into ingredient_characteristic VALUES(7,4,13,'aroma', 4);
+insert into ingredient_characteristic VALUES(8,4,10,'sabor', 1);
+insert into ingredient_characteristic VALUES(9,4,10,'aroma', 1);
+insert into ingredient_characteristic VALUES(10,3,4,'sabor', 3);
+insert into ingredient_characteristic VALUES(11,3,4,'aroma', 3);
+insert into ingredient_characteristic VALUES(12,3,9,'aroma', 4);
+insert into ingredient_characteristic VALUES(13,3,6,'sabor', 1);
+insert into ingredient_characteristic VALUES(14,3,16,'sabor', 1);
+insert into ingredient_characteristic VALUES(15,3,10,'aroma', 1);
+insert into ingredient_characteristic VALUES(16,2,4,'sabor', 3);
+insert into ingredient_characteristic VALUES(17,2,4,'aroma', 3);
+insert into ingredient_characteristic VALUES(18,2,5,'sabor', 1);
+insert into ingredient_characteristic VALUES(19,2,5,'aroma', 1);
+insert into ingredient_characteristic VALUES(20,1,1,'color',5);
+insert into ingredient_characteristic VALUES(21,1,2,'color',5);
+insert into ingredient_characteristic VALUES(22,1,3,'sabor',5);
+insert into ingredient_characteristic VALUES(23,1,4,'sabor',5);
+insert into ingredient_characteristic VALUES(24,1,5,'sabor',5);
+insert into ingredient_characteristic VALUES(25,6,1,'color', 5);
+insert into ingredient_characteristic VALUES(26,6,21,'retrogusto', 5);
+insert into ingredient_characteristic VALUES(27,6,17,'sabor', 5);
+insert into ingredient_characteristic VALUES(28,6,17,'aroma', 5);
+insert into ingredient_characteristic VALUES(29,6,18,'sabor', 5);
+insert into ingredient_characteristic VALUES(30,6,18,'aroma', 5);
+insert into ingredient_characteristic VALUES(31,6,19,'sabor', 5);
+insert into ingredient_characteristic VALUES(32,6,19,'aroma', 5);
+insert into ingredient_characteristic VALUES(33,6,22,'aroma', 3);
+insert into ingredient_characteristic VALUES(34,6,22,'sabor', 3);
+insert into ingredient_characteristic VALUES(35,5,1,'color', 5);
+insert into ingredient_characteristic VALUES(36,5,17,'sabor', 5);
+insert into ingredient_characteristic VALUES(37,5,18,'sabor', 5);
+insert into ingredient_characteristic VALUES(38,5,19,'sabor', 5);
+insert into ingredient_characteristic VALUES(39,5,3,'color', 3);
+insert into ingredient_characteristic VALUES(40,5,3,'sabor', 3);
+insert into ingredient_characteristic VALUES(41,5,20,'sabor', 2);
+insert into ingredient_characteristic VALUES(42,5,20,'aroma', 2);</sql><current_tab id="0"/></tab_sql></sqlb_project>

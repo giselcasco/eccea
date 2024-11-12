@@ -143,7 +143,7 @@ func (s *sqliteReader) GetYeastByName(yeastName string) (*ingredients.Yeast, err
 }
 
 func (s *sqliteReader) getCharacteristics(dbConn *sql.DB, ingredientID string) ([]dto.CharacteristicResponse, error) {
-	queryCharact := `SELECT c.id, c.description, c.adjetive_id, ic.type, ic.contribution FROM characteristic as c INNER JOIN ingredient_characteristic as ic ON c.id  =  ic.characteristic_id WHERE c.id  = ?`
+	queryCharact := `SELECT c.id, c.description, c.adjetive_id, ic.type, ic.contribution FROM characteristic as c INNER JOIN ingredient_characteristic as ic ON c.id  =  ic.characteristic_id WHERE ic.ingredient_id  = ?`
 
 	cursorCharact, err := dbConn.Query(queryCharact, ingredientID)
 	if err != nil {

@@ -43,5 +43,13 @@ func (c *flavorImpl) Estimate(params Params) (*Estimation, error) {
 }
 
 func (c *flavorImpl) joinResult(characteristics string, moreCharacteristics string) string {
-	return strings.Join([]string{characteristics, moreCharacteristics}, ", ")
+	if len(characteristics) > 0 && len(moreCharacteristics) > 0 {
+		return strings.Join([]string{characteristics, moreCharacteristics}, ", ")
+	}
+
+	if len(characteristics) > 0 && len(moreCharacteristics) == 0 {
+		return characteristics
+	}
+
+	return moreCharacteristics
 }

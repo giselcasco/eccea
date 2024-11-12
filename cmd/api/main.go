@@ -309,16 +309,11 @@ func executeFlavorUseCase() error {
 	if len(flavorEstimated.FlavorCharacteristics) > 0 ||
 		len(flavorEstimated.SmellCharacteristics) > 0 ||
 		len(flavorEstimated.AfterTasteCharacteristics) > 0 {
-		fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá las siguientes caracteristicas: \r\n")
-		if len(flavorEstimated.FlavorCharacteristics) > 0 {
-			fmt.Printf("%s\r\n", flavorEstimated.FlavorCharacteristics)
-		}
-		if len(flavorEstimated.SmellCharacteristics) > 0 {
-			fmt.Printf("%s\r\n", flavorEstimated.SmellCharacteristics)
-		}
-		if len(flavorEstimated.AfterTasteCharacteristics) > 0 {
-			fmt.Printf("%s\r\n", flavorEstimated.AfterTasteCharacteristics)
-		}
+		fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá las siguientes caracteristicas: \n")
+		fmt.Printf("%s", flavorEstimated.FlavorCharacteristics)
+		fmt.Printf("%s", flavorEstimated.SmellCharacteristics)
+		fmt.Printf("%s", flavorEstimated.AfterTasteCharacteristics)
+
 		fmt.Printf("Segun la cantidad de días de maduración, se estima que la cerveza tendrá %s \r\n",
 			flavorEstimated.FlavorMaturation)
 	}
