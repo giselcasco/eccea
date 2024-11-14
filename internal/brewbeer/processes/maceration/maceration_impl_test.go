@@ -11,6 +11,9 @@ import (
 )
 
 func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
+	const (
+		goldColor = "tonalidades doradas"
+	)
 	maltBuilder := ingredients.NewMaltBuilder()
 	maltBuilder.Name("Caramel")
 	maltBuilder.ColorSRM(10)
@@ -18,7 +21,7 @@ func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 		{
 			CharacteristicType: "color",
 			TypeAdjetives:      1,
-			Description:        ingredients.GoldColor,
+			Description:        goldColor,
 		},
 	})
 

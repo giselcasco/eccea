@@ -105,10 +105,10 @@ func (s *service) buildFlavorResult(malts []MaltParam) *FlavorResults {
 
 	for _, mCharacts := range malts {
 		if flavorsDes := s.buildCharacteristicsDescription(mCharacts, "sabor"); len(flavorsDes) > 0 {
-			flavorDescription += "La malta " + mCharacts.NameID + " aporta " + flavorsDes + ".\r"
+			flavorDescription += "La malta " + mCharacts.NameID + " aporta " + flavorsDes + ". "
 		}
 		if smellsDes := s.buildCharacteristicsDescription(mCharacts, "aroma"); len(smellsDes) > 0 {
-			smellDescription += "La malta " + mCharacts.NameID + " aporta " + smellsDes + ".\r"
+			smellDescription += "La malta " + mCharacts.NameID + " aporta " + smellsDes + ". "
 		}
 	}
 

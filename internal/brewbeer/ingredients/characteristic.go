@@ -11,13 +11,6 @@ type (
 )
 
 const (
-	// FlavorDescriptions
-	CaramelFlavor = "caramelo"
-
-	// ColorDescriptions
-	GoldColor      = "tonalidades doradas"
-	GoldAmberColor = "ambar dorado"
-
 	maxContribution = 5
 
 	space = " "

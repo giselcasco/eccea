@@ -87,13 +87,13 @@ func (s *service) buildFlavorResult(hops []HopParams) *FlavorResults {
 
 	for _, hCharacts := range hops {
 		if flavorsDes := s.buildCharacteristicsDescription(hCharacts, "sabor"); len(flavorsDes) > 0 {
-			flavorDescription += "El lúpulo " + hCharacts.NameID + " aporta " + flavorsDes + ".\r"
+			flavorDescription += "El lúpulo " + hCharacts.NameID + " aporta " + flavorsDes + ". "
 		}
 		if smellsDes := s.buildCharacteristicsDescription(hCharacts, "aroma"); len(smellsDes) > 0 {
-			smellDescription += "El lúpulo " + hCharacts.NameID + " aporta " + smellsDes + ".\r"
+			smellDescription += "El lúpulo " + hCharacts.NameID + " aporta " + smellsDes + ". "
 		}
 		if afterTasteDes := s.buildCharacteristicsDescription(hCharacts, "amargor"); len(afterTasteDes) > 0 {
-			afterTasteDescription += "El lúpulo " + hCharacts.NameID + " aporta " + afterTasteDes + ".\r"
+			afterTasteDescription += "El lúpulo " + hCharacts.NameID + " aporta " + afterTasteDes + ". "
 		}
 	}
 

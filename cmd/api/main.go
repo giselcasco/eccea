@@ -101,27 +101,27 @@ func executeBeerUseCase() error {
 	fermentationService := fermentation.NewService()
 	estimator := beer.NewBeerImpl(macerationService, boilingService, fermentationService, maturationService)
 
+	macerationParams, err := askForMacerationParams(true)
+	if err != nil {
+		return err
+	}
+
 	boilingParams, err := askForBoilingParams(false)
 	if err != nil {
-		fmt.Println(buildParamsError)
 		return err
 	}
 
-	fermentationParams, err := askForFermentationParams()
-	if err != nil {
-		fmt.Println(buildParamsError)
-		return err
+	fermentationParams := &fermentation.Params{}
+	fmt.Print("Ingrese la densidad final: ")
+	finalDensity, FDErr := scanFloat()
+	if FDErr != nil {
+		fmt.Sprintf(buildParamError, "la densidad final")
+		return FDErr
 	}
-
-	macerationParams, err := askForMacerationParams(false)
-	if err != nil {
-		fmt.Println(buildParamsError)
-		return err
-	}
+	fermentationParams.FinalDensity = *finalDensity
 
 	maturationParams, err := askForMaturationParams()
 	if err != nil {
-		fmt.Println(buildParamsError)
 		return err
 	}
 
@@ -131,12 +131,26 @@ func executeBeerUseCase() error {
 		Fermentation: fermentationParams,
 		Maturation:   maturationParams,
 	}
-	_, estimatorErr := estimator.Estimate(params)
+	estimateResult, estimatorErr := estimator.Estimate(params)
 	if estimatorErr != nil {
 		fmt.Printf("No fue posible estimar las caracteristicas de la cerveza con los valores suministrados\n")
 		time.Sleep(2 * time.Second)
 		return estimatorErr
 	}
+
+	if len(estimateResult.FlavorCharacteristics) > 0 ||
+		len(estimateResult.SmellCharacteristics) > 0 ||
+		len(estimateResult.AfterTasteCharacteristics) > 0 {
+		fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá las siguientes caracteristicas: \n")
+		fmt.Printf("%s", estimateResult.FlavorCharacteristics)
+		fmt.Printf("%s", estimateResult.SmellCharacteristics)
+		fmt.Printf("%s", estimateResult.AfterTasteCharacteristics)
+		fmt.Printf("%s", estimateResult.ColorCharacteristics)
+
+		fmt.Printf("Segun la cantidad de días de maduración, se estima que la cerveza tendrá:\n -IBU: %f \n -ABV: %f \n -COLOR: %d \n -Descripción del color: %s \n",
+			estimateResult.IBU, estimateResult.ABV, estimateResult.ColorSRM, estimateResult.ColorDescription)
+	}
+
 	return err
 }
 
@@ -149,8 +163,8 @@ el servicio del proceso de cocción
 y el repositorio de ingredientes
 */
 func executeIBUUseCase() error {
-	repository := repository.NewSqliteReader()
-	boilingService := boiling.NewService(repository)
+	sqliteReader := repository.NewSqliteReader()
+	boilingService := boiling.NewService(sqliteReader)
 	estimator := ibu.NewIBUImpl(boilingService)
 
 	boilingParams, err := askForBoilingParams(false)
