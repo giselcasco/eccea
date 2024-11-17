@@ -87,13 +87,13 @@ func (s *service) buildFlavorResult(hops []HopParams) *FlavorResults {
 
 	for _, hCharacts := range hops {
 		if flavorsDes := s.buildCharacteristicsDescription(hCharacts, "sabor"); len(flavorsDes) > 0 {
-			flavorDescription += "El lúpulo " + hCharacts.NameID + " aporta " + flavorsDes + ". "
+			flavorDescription += "El lúpulo " + hCharacts.NameID + " aporta " + flavorsDes
 		}
 		if smellsDes := s.buildCharacteristicsDescription(hCharacts, "aroma"); len(smellsDes) > 0 {
-			smellDescription += "El lúpulo " + hCharacts.NameID + " aporta " + smellsDes + ". "
+			smellDescription += "El lúpulo " + hCharacts.NameID + " aporta " + smellsDes
 		}
 		if afterTasteDes := s.buildCharacteristicsDescription(hCharacts, "amargor"); len(afterTasteDes) > 0 {
-			afterTasteDescription += "El lúpulo " + hCharacts.NameID + " aporta " + afterTasteDes + ". "
+			afterTasteDescription += "El lúpulo " + hCharacts.NameID + " aporta " + afterTasteDes
 		}
 	}
 
@@ -177,7 +177,7 @@ func (s *service) calculateIBU(params *Params, addition HopParams) float64 {
 	firstFactor := s.greatnessFactor(params.InitialDensity)
 	secondFactor := s.boilingTimeFactor(addition.TimeOfWork)
 	thirdFactor := s.proportionOfAlphaAcidUsed(addition.AlphaAcids, addition.Quantity)
-	divisor := float64(params.WortAmount) * 4.15
+	divisor := params.WortAmount * 4.15
 
 	if divisor > 0 {
 		return (firstFactor * secondFactor * thirdFactor) / divisor

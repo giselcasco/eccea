@@ -48,30 +48,39 @@ func (b *beerImpl) buildResults(
 	fermentationResult *fermentation.Results,
 	macerationResults *maceration.Results,
 	maturationResults maturation.Results) *Estimation {
-	flavorCharacteristics := []string{
+	flavorCharacteristics := b.buildString([]string{
+		macerationResults.FlavorCharacteristic(),
 		boilingResults.FlavorCharacteristic(),
-		fermentationResult.FlavorCharacteristic(),
 		maturationResults.FlavorMaturation(),
-	}
-	smellCharacteristics := []string{
+	})
+
+	smellCharacteristics := b.buildString([]string{
 		boilingResults.SmellCCharacteristic(),
-		fermentationResult.SmellCCharacteristic(),
-	}
-	afterTasteCharacteristics := []string{
-		boilingResults.AfterTasteCharacteristic(),
-	}
-	colorCharacteristics := []string{
-		fermentationResult.ColorCharacteristic(),
+	})
+
+	colorCharacteristics := b.buildString([]string{
+		macerationResults.ColorCharacteristic(),
 		maturationResults.ColorMaturation(),
-	}
+	})
+
 	return &Estimation{
 		IBU:                       boilingResults.IBU(),
 		ABV:                       fermentationResult.ABV(),
 		ColorDescription:          macerationResults.ColorDescription(),
 		ColorSRM:                  macerationResults.Color(),
-		ColorCharacteristics:      strings.Join(colorCharacteristics, ", "),
-		FlavorCharacteristics:     strings.Join(flavorCharacteristics, ", "),
-		SmellCharacteristics:      strings.Join(smellCharacteristics, ", "),
-		AfterTasteCharacteristics: strings.Join(afterTasteCharacteristics, ", "),
+		ColorCharacteristics:      colorCharacteristics,
+		FlavorCharacteristics:     flavorCharacteristics,
+		SmellCharacteristics:      smellCharacteristics,
+		AfterTasteCharacteristics: boilingResults.AfterTasteCharacteristic(),
 	}
+}
+
+func (b *beerImpl) buildString(characteristics []string) string {
+	var result []string
+	for _, characteristic := range characteristics {
+		if len(characteristic) > 0 {
+			result = append(result, characteristic)
+		}
+	}
+	return strings.Join(result, ", ")
 }

@@ -28,7 +28,7 @@ func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 				WortAmount:     50,
 				HopAdditions: []boiling.Hop{
 					{
-						AlphaAcids: 14.0,
+						NameID:     "CASCADE",
 						TimeOfWork: 30,
 						Quantity:   200,
 					},

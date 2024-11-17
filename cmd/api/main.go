@@ -101,57 +101,73 @@ func executeBeerUseCase() error {
 	fermentationService := fermentation.NewService()
 	estimator := beer.NewBeerImpl(macerationService, boilingService, fermentationService, maturationService)
 
-	macerationParams, err := askForMacerationParams(true)
+	params, err := buildBeerParams()
 	if err != nil {
 		return err
 	}
-
-	boilingParams, err := askForBoilingParams(false)
-	if err != nil {
-		return err
-	}
-
-	fermentationParams := &fermentation.Params{}
-	fmt.Print("Ingrese la densidad final: ")
-	finalDensity, FDErr := scanFloat()
-	if FDErr != nil {
-		fmt.Sprintf(buildParamError, "la densidad final")
-		return FDErr
-	}
-	fermentationParams.FinalDensity = *finalDensity
-
-	maturationParams, err := askForMaturationParams()
-	if err != nil {
-		return err
-	}
-
-	params := beer.Params{
-		Maceration:   macerationParams,
-		Boiling:      boilingParams,
-		Fermentation: fermentationParams,
-		Maturation:   maturationParams,
-	}
-	estimateResult, estimatorErr := estimator.Estimate(params)
+	estimateResult, estimatorErr := estimator.Estimate(*params)
 	if estimatorErr != nil {
 		fmt.Printf("No fue posible estimar las caracteristicas de la cerveza con los valores suministrados\n")
 		time.Sleep(2 * time.Second)
 		return estimatorErr
 	}
 
-	if len(estimateResult.FlavorCharacteristics) > 0 ||
-		len(estimateResult.SmellCharacteristics) > 0 ||
-		len(estimateResult.AfterTasteCharacteristics) > 0 {
-		fmt.Printf("En base a los parámetros ingresados, se estima que la cerveza tendrá las siguientes caracteristicas: \n")
-		fmt.Printf("%s", estimateResult.FlavorCharacteristics)
-		fmt.Printf("%s", estimateResult.SmellCharacteristics)
-		fmt.Printf("%s", estimateResult.AfterTasteCharacteristics)
-		fmt.Printf("%s", estimateResult.ColorCharacteristics)
-
-		fmt.Printf("Segun la cantidad de días de maduración, se estima que la cerveza tendrá:\n -IBU: %f \n -ABV: %f \n -COLOR: %d \n -Descripción del color: %s \n",
-			estimateResult.IBU, estimateResult.ABV, estimateResult.ColorSRM, estimateResult.ColorDescription)
+	fmt.Println("En base a los parámetros ingresados, se estima que la cerveza tendrá: \n")
+	fmt.Println("-IBU: ", estimateResult.IBU)
+	fmt.Println("-ABV: ", estimateResult.ABV)
+	fmt.Println("-COLOR: ", estimateResult.ColorSRM)
+	fmt.Println("-Descripción del color: ", estimateResult.ColorDescription)
+	if len(estimateResult.FlavorCharacteristics) > 0 {
+		fmt.Println("Caracteristicas del sabor: ", estimateResult.FlavorCharacteristics)
+	}
+	if len(estimateResult.SmellCharacteristics) > 0 {
+		fmt.Println("Caracteristicas del aroma: ", estimateResult.SmellCharacteristics)
+	}
+	if len(estimateResult.AfterTasteCharacteristics) > 0 {
+		fmt.Println("Caracteristicas de la sensación en boca: ", estimateResult.AfterTasteCharacteristics)
+	}
+	if len(estimateResult.ColorCharacteristics) > 0 {
+		fmt.Println("Caracteristicas del color: ", estimateResult.ColorCharacteristics)
 	}
 
+	time.Sleep(3 * time.Second)
+
 	return err
+}
+
+func buildBeerParams() (*beer.Params, error) {
+	boilingParams, err := askForBoilingParams(false)
+	if err != nil {
+		return nil, err
+	}
+
+	macerationParams, err := askForMacerationParams(true)
+	if err != nil {
+		return nil, err
+	}
+	macerationParams.WortAmount = boilingParams.WortAmount
+
+	fermentationParams := &fermentation.Params{}
+	fmt.Print("\nIngrese la densidad final: ")
+	finalDensity, FDErr := scanFloat()
+	if FDErr != nil {
+		fmt.Sprintf(buildParamError, "la densidad final")
+		return nil, FDErr
+	}
+	fermentationParams.InitialDensity = boilingParams.InitialDensity
+	fermentationParams.FinalDensity = *finalDensity
+
+	maturationParams, err := askForMaturationParams()
+	if err != nil {
+		return nil, err
+	}
+
+	return &beer.Params{
+		Maceration:   macerationParams,
+		Boiling:      boilingParams,
+		Fermentation: fermentationParams,
+		Maturation:   maturationParams,
+	}, nil
 }
 
 /*
@@ -353,7 +369,7 @@ func askForBoilingParams(onlyHops bool) (*boiling.Params, error) {
 		boilingParams.InitialDensity = *initialDensity
 
 		fmt.Print("Ingrese la cantidad de litros del mosto para el proceso de cocción: ")
-		wortAmount, scanErr := scanUint()
+		wortAmount, scanErr := scanFloat()
 		if scanErr != nil || wortAmount == nil {
 			fmt.Sprintf(buildParamError, " la cantidad de litros del mosto para la cocción")
 			return nil, scanErr
