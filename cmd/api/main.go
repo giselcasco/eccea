@@ -112,10 +112,10 @@ func executeBeerUseCase() error {
 		return estimatorErr
 	}
 
-	fmt.Println("En base a los parámetros ingresados, se estima que la cerveza tendrá: \n")
-	fmt.Println("-IBU: ", estimateResult.IBU)
-	fmt.Println("-ABV: ", estimateResult.ABV)
-	fmt.Println("-COLOR: ", estimateResult.ColorSRM)
+	fmt.Println("En base a los parámetros ingresados, se estima que la cerveza tendrá: ")
+	fmt.Printf("-IBU: %.2f\n", estimateResult.IBU)
+	fmt.Printf("-ABV: %.2f\n", estimateResult.ABV)
+	fmt.Println("-COLOR SRM: ", estimateResult.ColorSRM)
 	fmt.Println("-Descripción del color: ", estimateResult.ColorDescription)
 	if len(estimateResult.FlavorCharacteristics) > 0 {
 		fmt.Println("Caracteristicas del sabor: ", estimateResult.FlavorCharacteristics)
@@ -130,9 +130,10 @@ func executeBeerUseCase() error {
 		fmt.Println("Caracteristicas del color: ", estimateResult.ColorCharacteristics)
 	}
 
-	time.Sleep(3 * time.Second)
-
-	return err
+	fmt.Println(goodBeer)
+	fmt.Println()
+	time.Sleep(4 * time.Second)
+	return nil
 }
 
 func buildBeerParams() (*beer.Params, error) {

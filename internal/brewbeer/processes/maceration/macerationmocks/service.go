@@ -13,6 +13,36 @@ type ServiceMock struct {
 	mock.Mock
 }
 
+// EstimateBeer provides a mock function with given fields: params
+func (_m *ServiceMock) EstimateBeer(params *maceration.Params) (*maceration.Results, error) {
+	ret := _m.Called(params)
+
+	if len(ret) == 0 {
+		panic("no return value specified for EstimateBeer")
+	}
+
+	var r0 *maceration.Results
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*maceration.Params) (*maceration.Results, error)); ok {
+		return rf(params)
+	}
+	if rf, ok := ret.Get(0).(func(*maceration.Params) *maceration.Results); ok {
+		r0 = rf(params)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*maceration.Results)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(*maceration.Params) error); ok {
+		r1 = rf(params)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // EstimateColor provides a mock function with given fields: params
 func (_m *ServiceMock) EstimateColor(params *maceration.Params) (*maceration.ColorResults, error) {
 	ret := _m.Called(params)

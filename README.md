@@ -11,3 +11,7 @@ Estimador de caracteristicas de cerveza elaborada artesanalmente
 
 Copyright © 2023, [Gisel Casco](https://github.com/giselcasco).
 Released under the [MIT License](LICENSE).
+
+### Desarrollo de la solución
+
+3 - Desarrollo de la solución.pdf

@@ -13,6 +13,36 @@ type ServiceMock struct {
 	mock.Mock
 }
 
+// EstimateBeer provides a mock function with given fields: params
+func (_m *ServiceMock) EstimateBeer(params *boiling.Params) (*boiling.Results, error) {
+	ret := _m.Called(params)
+
+	if len(ret) == 0 {
+		panic("no return value specified for EstimateBeer")
+	}
+
+	var r0 *boiling.Results
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*boiling.Params) (*boiling.Results, error)); ok {
+		return rf(params)
+	}
+	if rf, ok := ret.Get(0).(func(*boiling.Params) *boiling.Results); ok {
+		r0 = rf(params)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*boiling.Results)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(*boiling.Params) error); ok {
+		r1 = rf(params)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // EstimateFlavor provides a mock function with given fields: params
 func (_m *ServiceMock) EstimateFlavor(params *boiling.Params) (*boiling.FlavorResults, error) {
 	ret := _m.Called(params)

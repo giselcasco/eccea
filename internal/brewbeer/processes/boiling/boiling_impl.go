@@ -210,17 +210,30 @@ func (s *service) proportionOfAlphaAcidUsed(alphaAcids float64, quantity float64
 }
 
 func (s *service) buildCharacteristicsDescription(hopParam HopParams, characteristicType string) string {
-	var characteristicsDescription string
-	var addConector = len(hopParam.Characteristics) - 1
-	for index, characterisc := range hopParam.Characteristics {
-		if strings.EqualFold(characterisc.CharacteristicType, characteristicType) {
-			characteristicsDescription += characterisc.GetDescriptionByProportion(hopParam.Proportion)
-			if index < addConector {
-				characteristicsDescription += s.getConnector(index, addConector)
-			}
+	var (
+		characteristicsDescription string
+		characteristics            = s.getCharacteristicsByType(hopParam.Characteristics, characteristicType)
+		addConnector               = len(characteristics) - 1
+	)
+
+	for index, characterisc := range characteristics {
+		characteristicsDescription += characterisc.GetDescriptionByProportion(hopParam.Proportion)
+		if index < addConnector {
+			characteristicsDescription += s.getConnector(index, addConnector)
 		}
+
 	}
 	return characteristicsDescription
+}
+
+func (s *service) getCharacteristicsByType(ccharacts []ingredients.Characteristic, characteristicType string) []ingredients.Characteristic {
+	var resultCharacts []ingredients.Characteristic
+	for _, characterisc := range ccharacts {
+		if strings.EqualFold(characterisc.CharacteristicType, characteristicType) {
+			resultCharacts = append(resultCharacts, characterisc)
+		}
+	}
+	return resultCharacts
 }
 
 func (s *service) getConnector(index, elements int) string {

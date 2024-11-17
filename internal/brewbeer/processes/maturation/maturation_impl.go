@@ -1,5 +1,7 @@
 package maturation
 
+const detailDescription = "Por el tiempo de maduración se estima que tendrá "
+
 type service struct {
 }
 
@@ -24,7 +26,7 @@ func (s *service) EstimateColor(params *Params) string {
 			}
 		}
 	}
-	return mapColorIntensity[daysCompare]
+	return detailDescription + mapColorIntensity[daysCompare]
 }
 
 func (s *service) EstimateFlavor(params *Params) string {
@@ -44,7 +46,7 @@ func (s *service) EstimateFlavor(params *Params) string {
 			}
 		}
 	}
-	return mapFlavorIntensity[daysCompare]
+	return detailDescription + mapFlavorIntensity[daysCompare]
 }
 
 func (s *service) EstimateBeer(params *Params) Results {

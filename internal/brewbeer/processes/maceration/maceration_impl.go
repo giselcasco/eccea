@@ -120,7 +120,7 @@ func (s *service) buildFlavorResult(malts []MaltParam) *FlavorResults {
 func (s *service) calculateFinalColorSRM(params *Params, malts []MaltParam) float64 {
 	var sum float64
 	for _, m := range malts {
-		sum += (m.Quantity / 1000) * m.ColorSRM
+		sum += (m.Quantity / 100) * m.ColorSRM
 	}
 
 	if params.WortAmount > 0 {
@@ -153,31 +153,34 @@ func (s *service) buildColorResult(colorFSRM float64, malts []MaltParam) *ColorR
 }
 
 func (s *service) buildCharacteristicsDescription(maltParam MaltParam, characteristicType string) string {
-	var characteristicsDescription string
-	elements := s.countElements(maltParam.Characteristics, characteristicType)
-	for index, characterisc := range maltParam.Characteristics {
-		if strings.EqualFold(characterisc.CharacteristicType, characteristicType) {
-			characteristicsDescription += characterisc.GetDescriptionByProportion(maltParam.Proportion)
-			if elements > 1 {
-				characteristicsDescription += s.getConnector(index, elements)
-			}
+	var (
+		characteristicsDescription string
+		characteristics            = s.getCharacteristicsByType(maltParam.Characteristics, characteristicType)
+		addConnector               = len(characteristics) - 1
+	)
+
+	for index, characteristic := range characteristics {
+		characteristicsDescription += characteristic.GetDescriptionByProportion(maltParam.Proportion)
+		if index < addConnector {
+			characteristicsDescription += s.getConnector(index, addConnector)
 		}
+
 	}
 	return characteristicsDescription
 }
 
-func (s *service) countElements(ccharacts []ingredients.Characteristic, characteristicType string) int {
-	amount := 0
+func (s *service) getCharacteristicsByType(ccharacts []ingredients.Characteristic, characteristicType string) []ingredients.Characteristic {
+	var resultCharacts []ingredients.Characteristic
 	for _, characterisc := range ccharacts {
 		if strings.EqualFold(characterisc.CharacteristicType, characteristicType) {
-			amount += 1
+			resultCharacts = append(resultCharacts, characterisc)
 		}
 	}
-	return amount
+	return resultCharacts
 }
 
 func (s *service) getConnector(index, elements int) string {
-	if index+2 == elements {
+	if index+1 == elements {
 		return " y "
 	}
 	return ", "
