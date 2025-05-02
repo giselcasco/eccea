@@ -13,22 +13,34 @@ type ServiceMock struct {
 	mock.Mock
 }
 
-// CalculateABV provides a mock function with given fields: params
-func (_m *ServiceMock) CalculateABV(params *fermentation.Params) float64 {
-	ret := _m.Called(params)
+// CalculateAlcoholByVolume provides a mock function with given fields: params
+func (_m *ServiceMock) CalculateAlcoholByVolume(initialDensity, finalDensity float64) (float64, error){
+	ret := _m.Called(initialDensity, finalDensity )
 
 	if len(ret) == 0 {
 		panic("no return value specified for CalculateABV")
 	}
 
 	var r0 float64
-	if rf, ok := ret.Get(0).(func(*fermentation.Params) float64); ok {
-		r0 = rf(params)
+	var r1 error
+	if rf, ok := ret.Get(0).(func(float64, float64 ) (float64, error)); ok {
+		return rf(initialDensity, finalDensity)
+	}
+	if rf, ok := ret.Get(0).(func(float64,float64) float64); ok {
+		r0 = rf(initialDensity, finalDensity)
 	} else {
-		r0 = ret.Get(0).(float64)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(float64)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(float64, float64) error); ok {
+		r1 = rf(initialDensity, finalDensity)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // EstimateBeer provides a mock function with given fields: params

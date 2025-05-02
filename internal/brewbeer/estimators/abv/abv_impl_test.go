@@ -17,7 +17,7 @@ func TestShould_EstimateSuccess_When_NilParams(t *testing.T) {
 	abvValue := 5.9
 	service.On("CalculateABV", &fermentation.Params{}).Return(abvValue, nil)
 
-	response, err := estimator.Estimate(abv.Params{})
+	response, err := estimator.EstimateAlcoholByVolume(abv.Params{})
 
 	assert.Equal(t, response, abvValue)
 	assert.Equal(t, err, nil)
@@ -34,7 +34,7 @@ func TestShould_EstimateFails_When_ServiceFails(t *testing.T) {
 
 	service.On("Do", mock.Anything, mock.Anything).Return(nil, errorMock)
 
-	response, err := estimator.Estimate(abv.Params{})
+	response, err := estimator.EstimateAlcoholByVolume(abv.Params{})
 
 	assert.NotNil(t, response)
 	assert.Error(t, err)

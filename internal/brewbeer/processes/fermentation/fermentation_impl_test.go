@@ -9,22 +9,39 @@ import (
 
 func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 	var dataSet = []struct {
-		nameTest string
-		params   *fermentation.Params
-		abv      float64
+		nameTest       string
+		initialDensity float64
+		finalDensity   float64
+		expectedABV    float64
+		expectedError  bool
 	}{
 		{
-			nameTest: "Fermentation success when nil params provided",
-			params:   &fermentation.Params{},
-			abv:      0,
+			nameTest:       "Fermentation success when nil params provided",
+			initialDensity: 0,
+			finalDensity:   0,
+			expectedABV:    0,
+			expectedError:  false,
 		},
 		{
-			nameTest: "Fermentation success when valid params provided",
-			params: &fermentation.Params{
-				InitialDensity: 1.055,
-				FinalDensity:   1.010,
-			},
-			abv: 5.906249999999991,
+			nameTest:       "Fermentation success when valid params provided",
+			initialDensity: 1.050,
+			finalDensity:   1.010,
+			expectedABV:    5.25,
+			expectedError:  false,
+		},
+		{
+			nameTest:       "Fermentation succes when initial density is nil",
+			initialDensity: 0,
+			finalDensity:   1.010,
+			expectedABV:    0,
+			expectedError:  true,
+		},
+		{
+			nameTest:       "Fermentation fail when initial density is negative",
+			initialDensity: -1.050,
+			finalDensity:   1.010,
+			expectedABV:    0,
+			expectedError:  true,
 		},
 	}
 
@@ -32,9 +49,10 @@ func TestShould_DoSuccess_When_ParamsOK(t *testing.T) {
 		t.Run(data.nameTest, func(t *testing.T) {
 			fermentationProcess := fermentation.NewService()
 
-			response := fermentationProcess.CalculateABV(data.params)
+			response, err := fermentationProcess.CalculateAlcoholByVolume(data.initialDensity, data.finalDensity)
 
-			assert.Equal(t, data.abv, response)
+			assert.Equal(t, data.expectedError, err == nil)
+			assert.Equal(t, data.expectedABV, response)
 		})
 	}
 }

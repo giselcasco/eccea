@@ -14,8 +14,6 @@ func NewABVImpl(service fermentation.Service) ABV {
 }
 
 // implementación para el calculo de la estimación del ABV
-func (abv *abvImpl) Estimate(params Params) (float64, error) {
-	result := abv.service.CalculateABV(&params.Fermentation)
-
-	return result, nil
+func (abv *abvImpl) EstimateAlcoholByVolume(params Params) (float64, error) {
+	return abv.service.CalculateAlcoholByVolume(params.Fermentation.InitialDensity, params.Fermentation.FinalDensity)
 }
